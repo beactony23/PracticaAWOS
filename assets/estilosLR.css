@@ -1,0 +1,138 @@
+/* ===== RESET ===== */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+}
+.wsp-btn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #25D366;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    z-index: 9999;
+}
+
+.wsp-btn img {
+    width: 35px;
+    height: 35px;
+}
+
+
+/* ===== BODY ===== */
+body.auth {
+  min-height: 100vh;
+  background-color: #ffffff;
+}
+
+/* ===== WRAPPER ===== */
+.auth-wrapper {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* ===== LADO VERDE ===== */
+.auth-left {
+  flex: 1;
+  background-color: #b9f6b0;
+  padding: 4rem;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.auth-left h1 {
+  font-size: 6rem;
+  margin-bottom: 1.5rem;
+}
+
+.auth-left p {
+  max-width: 400px;
+  font-size: 1.5rem;
+  line-height: 1.4;
+}
+
+/* ===== LADO BLANCO ===== */
+.auth-right {
+  flex: 1;
+  background-color: #ffffff;
+  padding: 4rem;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Texto */
+.auth-right h2 {
+  margin-bottom: 1rem;
+}
+
+.auth-right p {
+  font-size: 1rem;
+  margin-bottom: 1.5rem;
+  text-align: left;
+}
+
+/* ===== FORM ===== */
+.auth-right form {
+  width: 100%;
+  max-width: 400px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.auth-right label {
+  font-size: 0.9rem;
+}
+
+.auth-right input {
+  padding: 0.6rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+/* ===== ERROR ===== */
+.error {
+  color: red;
+  font-size: 0.85rem;
+}
+
+/* ===== BOTÓN ===== */
+.auth-right button {
+  margin-top: 1rem;
+  padding: 0.7rem;
+  font-size: 1rem;
+  background-color: #1e88e5;
+  color: #ffffff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.auth-right button:hover {
+  background-color: #1565c0;
+}
+
+/* ===== LINKS ===== */
+.auth-right a {
+  color: #1e88e5;
+  text-decoration: none;
+}
+
+.auth-right a:hover {
+  text-decoration: underline;
+}
+

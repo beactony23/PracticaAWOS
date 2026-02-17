@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" 
+    integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" 
+    crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous" defer></script>
+    <title>Geolocalizacion</title>
+    <script src="js/geolocalizacion.js"></script>
+</head>
+<body>
+
+    <div class="container mt-4">
+
+        <div class="card h-75">
+
+            <div class="card-body">
+
+                <label for="mapa">Utiliza el inspeccionar elementos para hallar la latitud y la longitud de la ubicación</label>
+                <div id="mapa" name="mapa">
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+        <div class="card">
+            <div class="card-body">
+                
+                <form id="formGeo" name="formGeo" method="post">
+
+                    
+                    <div class="row">
+                        <label class="form-label text-center mb-4">
+                            Ingresa la latitud y la longitud que obtuviste.
+                            (Escribe el resultado con dos decimales.)
+                        </label>
+                        <div id="respuesta-id">
+
+                            
+
+                            
+
+                        </div>
+                        <div class="col-6">
+                            <label for="guardar" class="mb-3">latitud</label>
+                            <input class="form-control" type="number" name="latitud" id="latitud" step="any">
+                            <input class="form-control" type="hidden" name="latitud-solucion" id="latitud-solucion">
+                        </div>
+                        <div class="col-6">
+                            <label for="guardar" class="mb-3">longitud</label>
+                            <input class="form-control" type="number" name="longitud" id="longitud" step="any">
+                            <input class="form-control" type="hidden" name="longitud-solucion" id="longitud-solucion">
+                        </div>
+
+                        <button type="submit"class="btn btn-success mt-4" id="guardar">
+                            Verificar ubicacion
+                        </button>
+
+                    </div>
+
+
+                </form>
+
+                <table class="table table-bordered mt-5">
+                    <thead>
+                        <tr></tr>
+                    </thead>
+                    <tbody>
+                        <td></td>
+
+                    </tbody>
+                </table>
+
+
+            </div>
+
+        </div>
+
+
+    </div>
+    
+</body>
+</html>

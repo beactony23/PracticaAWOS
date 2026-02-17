@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestión de Progreso</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="css">
+</head>
+<body>
+
+    <a href="https://www.tiktok.com/@yamilon227" target="_blank" class="social-sphere" title="Síguenos en TikTok">
+        <i class="fa-brands fa-tiktok"></i>
+    </a>
+
+    <h2><i class="fa-solid fa-chart-line"></i> Panel de Progreso</h2>
+
+    <div class="card">
+    <p id="mensajeError" style="color: red; font-weight: bold; display: none; margin: 10px 0;"></p>
+    <li>
+                    <a href="../index.html" class="mb-3">
+                            Página Principal
+                    </a>
+                </li>
+</div>
+        <form id="progresoForm">
+            <input type="hidden" id="id_edit" name="id_edit">
+            <input type="number" name="idUsuario" id="idU" placeholder="ID Usuario" required>
+            <input type="number" name="idPregunta" id="idP" placeholder="ID Pregunta" required>
+            <select name="Completado" id="comp" required>
+                <option value="1">Sí, finalizado</option>
+                <option value="0">No, en curso</option>
+            </select>
+            <input type="number" name="Intentos" id="int" placeholder="Intentos" required>
+            <input type="number" name="Tiempo_Segundos" id="time" placeholder="Segundos">
+            <input type="date" name="Fecha" id="fecha">
+            <button type="submit" class="btn btn-save" id="btnSubmit">Guardar Datos</button>
+        </form>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Usuario</th>
+                <th>Pregunta</th>
+                <th>Estado</th>
+                <th>Intentos</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody id="tablaProgreso">
+            </tbody>
+    </table>
+
+   <script>
+    // Función para cargar la tabla sin recargar la página
+    async function cargarTabla() {
+        try {
+            const res = await fetch('api.php');
+            const datos = await res.json();
+            let html = '';
+            
+            datos.forEach(row => {
+                const rowData = JSON.stringify(row).replace(/"/g, '&quot;');
+                
+                const usuarioDisplay = row.nombreUsuario ? row.nombreUsuario : `ID: ${row.idUsuario}`;
+                const preguntaDisplay = row.textoPregunta ? row.textoPregunta : `ID: ${row.idPregunta}`;
+
+                html += `<tr>
+                    <td><strong>${usuarioDisplay}</strong></td>
+                    <td>${preguntaDisplay}</td>
+                    <td>${row.Completado == 1 ? '✅ Finalizado' : '⏳ En curso'}</td>
+                    <td>${row.Intentos}</td>
+                    <td>
+                        <button class="btn btn-edit" onclick="editar(${rowData})">Editar</button>
+                        <button class="btn btn-del" onclick="eliminar(${row.idUsuario}, ${row.idPregunta})">Borrar</button>
+                    </td>
+                </tr>`;
+            });
+            document.getElementById('tablaProgreso').innerHTML = html;
+        } catch (e) {
+            console.error("Error al cargar la tabla:", e);
+        }
+    }
+
+    document.getElementById('progresoForm').onsubmit = async (e) => {
+        e.preventDefault(); // Evita que la página se refresque
+        const formData = new FormData(e.target);
+        const res = await fetch('api.php', { method: 'POST', body: formData });
+        const result = await res.json();
+        
+        if(result.status === 'success') {
+            e.target.reset(); // Limpia el formulario
+            document.getElementById('id_edit').value = "";
+            document.getElementById('idU').readOnly = false;
+            document.getElementById('idP').readOnly = false;
+            document.getElementById('btnSubmit').innerText = "Guardar Datos";
+            
+            // ACTUALIZACIÓN INSTANTÁNEA
+            await cargarTabla(); 
+        } else {
+            alert("Error: " + result.message);
+        }
+    };
+
+    function editar(data) {
+        document.getElementById('id_edit').value = data.idUsuario;
+        document.getElementById('idU').value = data.idUsuario;
+        document.getElementById('idU').readOnly = true;
+        document.getElementById('idP').value = data.idPregunta;
+        document.getElementById('idP').readOnly = true;
+        document.getElementById('comp').value = data.Completado;
+        document.getElementById('int').value = data.Intentos;
+        document.getElementById('time').value = data.Tiempo_Segundos;
+        document.getElementById('fecha').value = data.Fecha;
+        document.getElementById('btnSubmit').innerText = "Actualizar";
+    }
+
+    async function eliminar(u, p) {
+        if(confirm('¿Seguro que deseas eliminar?')) {
+            await fetch(`api.php?borrar_u=${u}&borrar_p=${p}`);
+            cargarTabla();
+        }
+    }
+
+    cargarTabla();
+</script>
+</body>
+</html>
