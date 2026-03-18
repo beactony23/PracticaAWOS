@@ -13,8 +13,8 @@ function buscarRespuestas() {
                         <button class="btn btn-info btn-editar" data-id="${r.idRespuesta}">Editar</button>
                         <button class="btn btn-danger btn-eliminar" data-id="${r.idRespuesta}">Eliminar</button>
                         <button onclick="verLongitud(${r.idRespuesta})" class="btn btn-secondary">
-    Longitud
-</button>
+                        Longitud
+                        </button>
 
                     </td>
                 </tr>
@@ -97,28 +97,33 @@ $(document).on("click", ".btn-eliminar", function () {
     $.post("servicio.php?eliminarRespuesta",
         { txtId: $(this).data("id") },
         function (res) {
-            if (res === "correcto") {
-                 alert("Respuesta eliminada correctamente")
-                buscarRespuestas();
 
-                // En tiempo real para los demás clientes
-            conn.send("buscar-respuestas")
+            console.log("Respuesta del servidor:", res)
+
+            if (res.trim() === "correcto") {
+
+                buscarRespuestas()
+
+                conn.send("buscar-respuestas")
             }
         }
     );
 });
+
 
 const conn = new WebSocket("ws://localhost:8080/chat")
 conn.onmessage = function (e) {
     const comando = e.data
     console.log(comando)
     if (comando == "buscar-respuestas") {
-        const toastLiveExample = document.getElementById("liveToast")
-        const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastLiveExample)
-        toastBootstrap.show()
+        alert("Se ha actualizado la lista de respuestas")
 
         // Asincrono (Dentro de la APP)
         buscarRespuestas()
+
+        const toastLiveExample = document.getElementById("liveToast")
+        const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastLiveExample)
+        toastBootstrap.show()
     }
 }
 conn.onopen = function (e) {
