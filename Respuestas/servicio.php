@@ -8,10 +8,23 @@ $cn = new mysqli(
 
 $cn->set_charset("utf8mb4");
 
+$host = "46.28.42.226";
+$db   = "u760464709_24005037_bd";
+$user = "u760464709_24005037_usr";
+$pass = "N&2lbK=8;Mrt";
+try {
+$pdo = new PDO(
+        "mysql:host=$host;dbname=$db;charset=utf8",
+        $user,
+        $pass,
+        [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
+    );
+} catch (PDOException $e) {
+    die("Error de conexión a la base de datos");
+}
+
 if (isset($_GET["respuestas"])) {
-    $sql = "SELECT r.idRespuesta, r.Respuesta, p.Pregunta
-            FROM Respuesta r
-            INNER JOIN Preguntas p ON r.idPregunta = p.idPregunta";
+    $sql = "SELECT * FROM View_Respuestas";
     $res = $cn->query($sql);
 
     $datos = [];
@@ -24,12 +37,7 @@ if (isset($_GET["respuestas"])) {
 
 if (isset($_GET["PreguntasSinrespuestas"])) {
 
-    $sql = "
-        SELECT p.idPregunta, p.Pregunta
-        FROM Preguntas p
-        LEFT JOIN Respuesta r ON r.idPregunta = p.idPregunta
-        WHERE r.idRespuesta IS NULL
-    ";
+    $sql = "SELECT * FROM `view_RespuestasSinPreguntas`";
 
     $res = $cn->query($sql);
 
@@ -80,11 +88,22 @@ if (isset($_GET["agregarRespuesta"])) {
     $respuesta = $_POST["txtRespuesta"];
     $idPregunta = $_POST["cboPregunta"];
 
-    $sql = "INSERT INTO Respuesta (Respuesta, idPregunta, fechaRegistro)
-        VALUES ('$respuesta', '$idPregunta', NOW())";
+    #$sql = "INSERT INTO Respuesta (Respuesta, idPregunta, fechaRegistro)
+        #VALUES ('$respuesta', '$idPregunta', NOW())";
 
+    #echo $cn->query($sql) ? $cn->insert_id : 0;
+    #echo "correcto";
+    
+    $prepare = $pdo->prepare("CALL agregarRespuesta(:respuesta, :idPregunta, :pFechaRegistro)");
+    $prepare->bindParam(":respuesta", $_POST["txtRespuesta"]);
+    $prepare->bindParam(":idPregunta", $_POST["cboPregunta"]);
+    $prepare->bindParam(":pFechaRegistro", date("Y-m-d H:i:s"));
+    $prepare->execute();
+    
 
-    echo $cn->query($sql) ? $cn->insert_id : 0;
+    header("Content-Type: application/json");
+    echo json_encode(["status" => "correcto"]);
+
 }
 
 if (isset($_GET["editarRespuesta"])) {
@@ -99,20 +118,33 @@ if (isset($_GET["editarRespuesta"])) {
 if (isset($_GET["modificarRespuesta"])) {
     $id = $_POST["txtId"];
     $respuesta = $_POST["txtRespuesta"];
-    $idPregunta = $_POST["cboPregunta"];
 
-    $sql = "UPDATE Respuesta
-            SET Respuesta='$respuesta', idPregunta='$idPregunta'
-            WHERE idRespuesta=$id";
+    #$sql = "UPDATE Respuesta
+            #SET Respuesta='$respuesta', idPregunta='$idPregunta'
+            #WHERE idRespuesta=$id";
 
-    echo $cn->query($sql) ? "correcto" : "error";
+    #echo $cn->query($sql) ? "correcto" : "error";
+
+    $prepare = $pdo->prepare("CALL modificarRespuesta(:idRespuesta, :respuesta)");
+    $prepare->bindParam(":idRespuesta", $_POST["txtId"]);
+    $prepare->bindParam(":respuesta", $_POST["txtRespuesta"]);
+    $prepare->execute();
+    
+
+    header("Content-Type: application/json");
+    echo json_encode(["status" => "correcto"]);
 }
 
 if (isset($_GET["eliminarRespuesta"])) {
     $id = $_POST["txtId"];
 
-    $sql = "DELETE FROM Respuesta WHERE idRespuesta=$id";
-    echo $cn->query($sql) ? "correcto" : "error";
+    $prepare = $pdo->prepare("CALL eliminarRespuesta(:idRespuesta)");
+    $prepare->bindParam(":idRespuesta", $_POST["txtId"]);
+    $prepare->execute();
+    
+
+    header("Content-Type: application/json");
+    echo json_encode(["status" => "correcto"]);
 }
 
 if (isset($_GET["longitudRespuesta"])) {

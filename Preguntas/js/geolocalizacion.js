@@ -10,7 +10,6 @@ const options = {
 
 function mapear_ubicacion(lat , long){
 
-
      $("#mapa").html(`
      <iframe 
             src="https://www.google.com/maps?q=${lat},${long}&z=15&output=embed"

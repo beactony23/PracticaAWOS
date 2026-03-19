@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Login</title>
+  <link rel="stylesheet" href="assets/estilosLR.css">
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="js/login.js"></script>
+</head>
+<body class="auth">
+<div class="auth-wrapper">
+  <div class="auth-left">
+    <h1>Hola<br>usuario!</h1>
+    <p>Bienvenido de nuevo.<br>Inicia sesión para continuar.</p>
+  </div>
+  <div class="auth-right">
+    <h2>Iniciar sesión</h2>
+    <p>¿No tienes cuenta? <a href="register.php">Regístrate</a></p>
+    <form method="POST" name="frmlogin" id="frmlogin">
+      <div id="mensaje-error" style="
+        display: none; 
+        background-color: #f8d7da; 
+        color: #721c24; 
+        padding: 10px; 
+        border-radius: 5px; 
+        margin-bottom: 15px; 
+        border: 1px solid #f5c6cb;
+        font-size: 0.9em;
+        text-align: center;">
+    </div>
+      <label>Email</label>
+      <input type="email" name="email" placeholder="correo@ejemplo.com" required>
+      <label>Contraseña</label>
+      <input type="password" name="pass" placeholder="********" required>
+      <button type="submit">Entrar</button>
+    </form>
+  </div>
+</div>
+<a href="https://wa.me/5218441234567?text=Hola" class="wsp-btn" target="_blank">
+   <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg">
+</a>
+</body>
+</html>

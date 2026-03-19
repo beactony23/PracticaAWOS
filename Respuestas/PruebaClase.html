@@ -1,97 +1,142 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-  <style>
-.wsp-btn {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background: #25D366;
-    color: white;
-    border-radius: 50%;
-    width: 60px;
-    height: 60px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 35px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-    text-decoration: none;
-    transition: transform 0.2s;
-}
-
-.wsp-btn:hover {
-    transform: scale(1.1);
-}
-</style>
-    <title>AWOS</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+    <title>Gestión de Respuestas - AmphIQ Style</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-
-
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="Diseño.css">
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 </head>
+<body>
 
-<body>  
-
-<div class="container">
-    <h1>Prueba Clase AWOS</h1>
-<li>
-                    <a href="../index.html" class="mb-3">
-                            Página Principal
-                    </a>
-                </li>
-    <form id="frmRespuesta">
-        <label for="txtId">Id:</label>
-        <input type="text" id="txtId" name="txtId" class="form-control" readonly>
-
-        <label for="txtRespuesta">Respuesta:</label>
-        <input type="text" id="txtRespuesta" name="txtRespuesta" class="form-control mb-2">
-
-        <label for="cboPregunta">Pregunta:</label>
-        <select id="cboPregunta" name="cboPregunta" class="form-select mb-2">
-            <option value="">Seleccione una pregunta</option>
-        </select>
-
-        <button type="submit" class="btn btn-primary">Guardar</button>
-        <button type="reset" class="btn btn-secondary">Cancelar</button>
-    </form>
-
-    <button id="btnSinRespuesta" class="btn btn-warning mt-3 mb-2">
-    Ver preguntas sin respuesta
-</button>
-
-<button id="btnRespuestas" class="btn btn-secondary mt-3 mb-2">
-    Ver respuestas normales
-</button>
-<button id="btnTotal" class="btn btn-success">Total respuestas</button>
-<button id="btnHoy" class="btn btn-info">Respuestas de hoy</button>
-
-
-    <table class="table table-sm table-bordered mt-4">
-        <thead>
-            <tr>
-                <th>Pregunta</th>
-                <th>Respuesta</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-        <tbody id="tbodyRespuestas"></tbody>
-    </table>
+<div class="bg-blobs">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+    <div class="blob blob-4"></div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
-<script src="main.js"></script>
+<div class="particles" id="particles"></div>
 
-<a href="https://wa.me/5218782679744?text=Hola,%20tengo%20dudas%20acerca%20de%20una%20respuesta"
-   class="wsp-btn"
-   target="_blank">
-   <i class="bi bi-whatsapp"></i>
-</a>
+<header class="edu-header">
+    <div class="edu-logo">🎓</div>
+    <div class="edu-brand">
+        Gestión de
+        <span>Respuestas</span>
+    </div>
+</header>
 
+<nav class="nav-pills-edu">
+    <button onclick="buscarRespuestas()" class="nav-pill np-2" style="border:none;">📋 Ver Todas</button>
+    
+    <button id="btnSinRespuesta" class="nav-pill np-1" style="border:none;">📊 Sin Respuesta</button>
+    <button id="btnTotal" class="nav-pill np-3" style="border:none;">📈 Ver Total</button>
+    <a href="../index.html" class="nav-pill np-4">🏠 Inicio</a>
+</nav>
 
+<div class="main-layout">
+    <div class="edu-card">
+        <div class="card-header-edu">
+            <div class="icon-badge ib-purple">✏️</div>
+            <h2>Nueva Respuesta</h2>
+        </div>
+        <div class="card-body-edu">
+            <form id="frmRespuesta" method="POST">
+                <div class="form-group">
+                    <label for="txtId" class="form-label-edu">ID</label>
+                    <input type="text" id="txtId" name="txtId" class="form-control-edu" readonly placeholder="Auto-generado">
+                </div>
+
+                <div class="form-group">
+                    <label for="txtRespuesta" class="form-label-edu">Respuesta</label>
+                    <input type="text" id="txtRespuesta" name="txtRespuesta" class="form-control-edu" placeholder="Escribe la respuesta…">
+                </div>
+
+                <div class="form-group">
+                    <label for="cboPregunta" class="form-label-edu">Pregunta</label>
+                    <div class="select-wrap">
+                        <select id="cboPregunta" name="cboPregunta" class="form-control-edu form-select-edu">
+                            <option value="">Selecciona una pregunta</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div style="display:flex; gap:10px; margin-top:20px;">
+                    <button type="submit" class="btn-edu btn-save">💾 Guardar</button>
+                    <button type="reset" class="btn-edu btn-cancel">✕ Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="edu-card">
+        <div class="card-header-edu">
+            <div style="display:flex;align-items:center;gap:10px;">
+                <div class="icon-badge ib-teal">📋</div>
+                <h2 class="table-title">Registro de Respuestas</h2>
+            </div>
+        </div>
+        <div class="card-body-edu" style="padding:16px;">
+            <div class="table-wrap">
+                <table class="edu-table">
+                    <thead>
+                        <tr>
+                            <th>Pregunta</th>
+                            <th>Respuesta</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbodyRespuestas">
+                        </tbody>
+                </table>    
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="main.js" defer></script>
+<script>
+    // Partículas de fondo
+    (function() {
+        const colors = ['#6c63ff','#ff6584','#43d9ad','#ffbe0b'];
+        const container = document.getElementById('particles');
+        for (let i = 0; i < 20; i++) {
+            const p = document.createElement('div');
+            p.className = 'particle';
+            const size = Math.random() * 12 + 5;
+            p.style.cssText = `
+                width:${size}px; height:${size}px;
+                background:${colors[Math.floor(Math.random()*colors.length)]};
+                left:${Math.random()*100}vw;
+                animation-duration:${Math.random()*14+8}s;
+                opacity:0.3;
+            `;
+            container.appendChild(p);
+        }
+    })();
+
+    // MutationObserver para aplicar estilos a los botones que vienen de la BD
+    window.addEventListener('DOMContentLoaded', function() {
+        const tbody = document.getElementById('tbodyRespuestas');
+        const observer = new MutationObserver(function(mutations) {
+            mutations.forEach(m => {
+                m.addedNodes.forEach(node => {
+                    if (node.nodeType !== 1) return;
+                    node.querySelectorAll('.btn-editar').forEach(btn => {
+                        btn.className = 'btn-row btn-row-edit btn-editar';
+                        if (!btn.textContent.includes('✏️')) btn.innerHTML = '✏️ Editar';
+                    });
+                    node.querySelectorAll('.btn-eliminar').forEach(btn => {
+                        btn.className = 'btn-row btn-row-del btn-eliminar';
+                        if (!btn.textContent.includes('🗑️')) btn.innerHTML = '🗑️ Eliminar';
+                    });
+                });
+            });
+        });
+        observer.observe(tbody, { childList: true, subtree: true });
+    });
+</script>
 </body>
 </html>

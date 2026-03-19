@@ -1,7 +1,22 @@
 <?php
+// Anti-Cache
+header("Cache-Control: no-cache, no-store, must-revalidate");
+header("Pragma: no-cache");
+header("Expires: 0");
+
 require_once "conexion.php";
+session_start();
 
 $error = "";
+
+$con = new Conexion(array(
+  "tipo"       => "mysql",
+  "servidor"   => "46.28.42.226",
+  "bd"         => "u760464709_24005037_bd",
+  "usuario"    => "u760464709_24005037_usr",
+  "contrasena" => "N&2lbK=8;Mrt"
+));
+
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
@@ -17,26 +32,24 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $error = "Las contraseñas no coinciden";
     }
     else {
-
         try {
             $passHash = password_hash($pass, PASSWORD_DEFAULT);
+            $sql = "CALL sp_AltaNuevoUsuario(?, ?, ?)";
+            $stmt = $con->prepare($sql);
+            $stmt->bindParam(1,$nombre);
+            $stmt->bindParam(2,$passHash);
+            $stmt->bindParam(3,$email);
+            $stmt->execute();
 
-            $sql = "INSERT INTO Usuarios 
-                    (Nom_Usuario, CorreoElectronico, Contrasena, Nivel, Experiencia, id_rol)
-                    VALUES (?, ?, ?, 1, 0, 2)"; // 2 = Usuario
-
-            $stmt = $pdo->prepare($sql);
-            $stmt->execute([$nombre, $email, $passHash]);
-
-            header("Location: login.php");
+            // Redirigir al login con un mensaje de éxito
+            header("Location: login.html?status=success");
             exit;
 
         } catch (PDOException $e) {
-
             if ($e->getCode() == 23000) {
                 $error = "Este correo ya está registrado";
             } else {
-                $error = "Error al registrar usuario";
+                $error = "Error técnico al registrar.";
             }
         }
     }
@@ -50,56 +63,30 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
   <title>Registro</title>
   <link rel="stylesheet" href="assets/estilosLR.css">
 </head>
-
 <body class="auth">
 <div class="auth-wrapper">
-
   <div class="auth-left">
     <h1>Hello<br>World.</h1>
-    <p>Bienvenido a nuestra página web.<br>Crea tu cuenta.</p>
+    <p>Bienvenido a nuestra página web.<br>Crea tu cuenta usando procedimientos SQL.</p>
   </div>
-
   <div class="auth-right">
     <h2>Crear cuenta</h2>
     <p>¿Ya tienes cuenta? <a href="login.php">Inicia sesión</a></p>
-
     <?php if ($error): ?>
       <p class="error"><?= $error ?></p>
     <?php endif; ?>
-
     <form method="POST">
       <label>Nombre</label>
       <input type="text" name="user" required>
-
       <label>Email</label>
       <input type="email" name="email" required>
-
       <label>Contraseña</label>
-      <input
-  type="password"
-  id="pass"
-  name="pass"
-  required
-  minlength="8"
-  pattern="(?=.*[A-Z])(?=.*[0-9])(?=.*[\W_]).{8,}"
-  title="Mínimo 8 caracteres, una mayúscula, un número y un símbolo"
->
-
-
+      <input type="password" name="pass" required minlength="8" pattern="(?=.*[A-Z])(?=.*[0-9])(?=.*[\W_]).{8,}" title="Mínimo 8 caracteres, una mayúscula, un número y un símbolo">
       <label>Confirmar contraseña</label>
       <input type="password" name="pass2" required>
-
       <button type="submit">Registrarse</button>
     </form>
   </div>
-
 </div>
-<!-- Botón WhatsApp -->
-<a href="https://wa.me/5218441234567?text=Hola%20tengo%20dudas%20con%20el%20registro"
-   class="wsp-btn"
-   target="_blank">
-   <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg">
-</a>
-
 </body>
 </html>

@@ -3,99 +3,221 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Productos</title>
+    <title>  Gestión de Preguntas</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" 
     integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" 
     crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous" defer></script>
     <script src="js/preguntas.js" defer></script>
-</head>
+   <link rel="stylesheet" href="Diseño.css">
+</head> 
 <body>
-<div class="container mt-4">
-    <div class="card shadow-sm">
 
-        <div class="card-body">
-            <ol>
-                <li>
-                    <a href="consultas_preguntas.html" class="mb-3">
-                            Consultas 
-                    </a>
-                </li>
-                <li>
-                    <a href="geolocalizacion.html" class="mb-3">
-                            Geolocalizacion
-                    </a>
-                </li>
-                <li>
-                    <a href="../index.html" class="mb-3">
-                            Volver al inicio
-                    </a>
-                </li>
-            </ol>
+<div class="bg-blobs">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+    <div class="blob blob-4"></div>
+</div>
 
+<div class="particles" id="particles"></div>
 
+<header class="edu-header">
+    <div class="edu-logo">🎓</div>
+    <div class="edu-brand">
+        Preguntas
+        <span>AmphIQ</span>
+    </div>
+</header>
 
-            <div class="row">
+<nav class="nav-pills-edu">
+    <a href="consultas_preguntas.html" class="nav-pill np-1">📊 Consultas</a>
+    <a href="geolocalizacion.html"     class="nav-pill np-2">🌍 Geolocalización</a>
+    <a href="../index.html"            class="nav-pill np-3">🏠 Inicio</a>
+</nav>
 
-                <div class=" col-12 ">
-                    
-                    <form id="frmProducto" method="POST">
-                        <div class="mb-2">
-                            <label for="txtId" class="form-label">Id</label>
-                            <input type="text" id="txtId" name="txtId" class="form-control" readonly>
-                        </div>
+<div class="ws-status">
+    <div class="ws-dot" id="wsDot"></div>
+    <span id="wsLabel">Conectando WebSocket…</span>
+</div>
 
-                        <div class="mb-2">
-                            <label for="cboCurso" class="form-label">Curso</label>
-                            <select id="cboCurso" name="cboCurso" class="form-select">
-                                <option value="">Selecciona una opción</option>
-                            </select>
-                        </div>
+<div class="main-layout">
 
-                        <div class="mb-2">
-                            <label for="txtPregunta" class="form-label">Pregunta</label>
-                            <input type="text" id="txtPregunta" name="txtPregunta" class="form-control">
-                        </div>
+    <div class="edu-card">
+        <div class="card-header-edu">
+            <div class="icon-badge ib-purple">✏️</div>
+            <h2>Nueva Pregunta</h2>
+        </div>
+        <div class="card-body-edu">
+            <form id="frmProducto" method="POST">
 
-                        <div class="mb-2">
-                            <label for="txtValor" class="form-label">Valor</label>
-                            <input type="number" id="txtValor" name="txtValor" class="form-control">
-                        </div>
-
-                        <div class="mt-3">
-                            <button type="submit" class="btn btn-primary btn-sm">Guardar</button>
-                            <button type="reset" class="btn btn-secondary btn-sm">Cancelar</button>
-                        </div>
-                    </form>
-
+                <div class="form-group">
+                    <label for="txtId" class="form-label-edu">ID</label>
+                    <input type="text" id="txtId" name="txtId" class="form-control-edu" readonly placeholder="Auto-generado">
                 </div>
 
-            </div>
-            
- 
+                <div class="form-group">
+                    <label for="cboCurso" class="form-label-edu">Curso</label>
+                    <div class="select-wrap">
+                        <select id="cboCurso" name="cboCurso" class="form-control-edu form-select-edu">
+                            <option value="">Selecciona una opción</option>
+                        </select>
+                    </div>
+                </div>
 
-            <h5 class="card-title mb-3">Registro de Preguntas</h5>
+                <div class="form-group">
+                    <label for="txtPregunta" class="form-label-edu">Pregunta</label>
+                    <input type="text" id="txtPregunta" name="txtPregunta" class="form-control-edu" placeholder="Escribe la pregunta…">
+                </div>
 
+                <div class="form-group">
+                    <label for="txtValor" class="form-label-edu">Valor (puntos)</label>
+                    <input type="number" id="txtValor" name="txtValor" class="form-control-edu" placeholder="Ej: 10">
+                </div>
 
-            <table class="table table-sm table-bordered mt-3">
-                <thead class="table-light">
-                    <tr>
-                        <th>Id</th>
-                        <th>Pregunta</th>
-                        <th>Valor</th>
-                        <th>Curso</th>
-                        <th>Hora-Registro</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody id="tbodyPreguntas"></tbody>
-            </table>
-
+                <div style="display:flex; gap:10px; margin-top:20px;">
+                    <button type="submit" class="btn-edu btn-save">💾 Guardar</button>
+                    <button type="reset"  class="btn-edu btn-cancel">✕ Cancelar</button>
+                </div>
+            </form>
         </div>
     </div>
 
+    <div class="edu-card">
+        <div class="card-header-edu" style="justify-content:space-between; flex-wrap:wrap; gap:10px;">
+            <div style="display:flex;align-items:center;gap:10px;">
+                <div class="icon-badge ib-teal">📋</div>
+                <h2 class="table-title">Registro de Preguntas</h2>
+            </div>
+            <span class="table-count" id="countBadge">0 preguntas</span>
+        </div>
+        <div class="card-body-edu" style="padding:16px;">
+            <div class="table-wrap">
+                <table class="edu-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Pregunta</th>
+                            <th>Valor</th>
+                            <th>Curso</th>
+                            <th>Hora Registro</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbodyPreguntas">
+                        <tr>
+                            <td colspan="6">
+                                <div class="empty-state">
+                                    <div class="es-icon">🔍</div>
+                                    <p>Cargando preguntas…</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>    
+            </div>
+        </div>
+    </div>
 
 </div>
 
+<div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index:9999;">
+    <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header">
+            <span style="margin-right:8px;">🔔</span>
+            <strong class="me-auto">Preguntas</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body" id="toastMensaje">
+            Hubo un cambio en las preguntas
+        </div>
+    </div>
+</div>
+
+<script>
+    (function() {
+        const colors = ['#6c63ff','#ff6584','#43d9ad','#ffbe0b','#fb5607','#a78bfa','#0ea5e9'];
+        const container = document.getElementById('particles');
+        for (let i = 0; i < 22; i++) {
+            const p = document.createElement('div');
+            p.className = 'particle';
+            const size = Math.random() * 12 + 5;
+            p.style.cssText = `
+                width:${size}px; height:${size}px;
+                background:${colors[Math.floor(Math.random()*colors.length)]};
+                left:${Math.random()*100}vw;
+                animation-duration:${Math.random()*14+8}s;
+                animation-delay:${Math.random()*-18}s;
+                opacity:0;
+            `;
+            container.appendChild(p);
+        }
+    })();
+
+    function setWsStatus(state) {
+        const dot   = document.getElementById('wsDot');
+        const label = document.getElementById('wsLabel');
+        dot.className = 'ws-dot ' + state;
+        label.textContent = state === 'connected' ? 'WebSocket conectado'
+                          : state === 'error'     ? 'WebSocket desconectado'
+                          : 'Conectando WebSocket…';
+    }
+
+    window.addEventListener('DOMContentLoaded', function() {
+        const tbody = document.getElementById('tbodyPreguntas');
+        if (!tbody) return;
+        const observer = new MutationObserver(function() {
+            const rows = tbody.querySelectorAll('tr').length;
+            const badge = document.getElementById('countBadge');
+            if (badge) badge.textContent = rows + ' pregunta' + (rows !== 1 ? 's' : '');
+        });
+        observer.observe(tbody, { childList: true, subtree: true });
+    });
+
+    const _origWS = window.WebSocket;
+    window.WebSocket = function(url) {
+        const ws = new _origWS(url);
+        ws.addEventListener('open',  () => setWsStatus('connected'));
+        ws.addEventListener('close', () => setWsStatus('error'));
+        ws.addEventListener('error', () => setWsStatus('error'));
+        return ws;
+    };
+    window.WebSocket.prototype = _origWS.prototype;
+
+    document.addEventListener('click', function(e) {
+    });
+
+    window.addEventListener('DOMContentLoaded', function() {
+        const tbody = document.getElementById('tbodyPreguntas');
+        if (!tbody) return;
+        const observer = new MutationObserver(function(mutations) {
+            mutations.forEach(m => {
+                m.addedNodes.forEach(node => {
+                    if (node.nodeType !== 1) return;
+                    node.querySelectorAll('.btn-info.btn-editar').forEach(btn => {
+                        btn.className = 'btn-row btn-row-edit btn-editar';
+                        btn.dataset.id = btn.dataset.id;
+                        if (!btn.textContent.includes('✏️')) btn.textContent = '✏️ ' + btn.textContent.trim();
+                    });
+                    node.querySelectorAll('.btn-danger.btn-eliminar').forEach(btn => {
+                        btn.className = 'btn-row btn-row-del btn-eliminar';
+                        btn.dataset.id = btn.dataset.id;
+                        if (!btn.textContent.includes('🗑️')) btn.textContent = '🗑️ ' + btn.textContent.trim();
+                    });
+                    const tds = node.querySelectorAll('td');
+                    if (tds.length >= 3) {
+                        const val = tds[2].textContent.trim();
+                        if (val && !tds[2].querySelector('.valor-badge')) {
+                            tds[2].innerHTML = `<span class="valor-badge">${val}</span>`;
+                        }
+                    }
+                });
+            });
+        });
+        observer.observe(tbody, { childList: true, subtree: true });
+    });
+</script>
+</body>
 </html>

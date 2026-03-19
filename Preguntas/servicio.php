@@ -34,7 +34,7 @@ require "enviarCorreo.php";
 
 $con = new Conexion(array(
   "tipo"       => "mysql",
-  "servidor"   => "82.180.168.1",
+  "servidor"   => "46.28.42.226",
   "bd"         => "u760464709_24005037_bd",
   "usuario"    => "u760464709_24005037_usr",
   "contrasena" => "N&2lbK=8;Mrt"
@@ -44,14 +44,14 @@ $con = new Conexion(array(
 
 
 if (isset($_GET["Preguntas"])) {
-  $select = $con->select("Preguntas", "Preguntas.idPregunta as ID , Preguntas.Pregunta  , Preguntas.Valor , Cursos.NombreCursos as 'Nombre del curso' , Preguntas.HoraRegistro ");
-  $select->innerjoin("Cursos on Cursos.idCursos = Preguntas.idCursos");
-  $select->orderby("idPregunta DESC");
-  $select->limit(10);
+  $select = $con->select("MostrarPreguntas", "*");
 
   header("Content-Type: application/json");
   echo json_encode($select->execute());
 }
+
+
+
 elseif (isset($_GET["editarPregunta"])) {
   $id = $_GET["txtId"];
 
@@ -62,6 +62,13 @@ elseif (isset($_GET["editarPregunta"])) {
   echo json_encode($select->execute());
 }
 
+
+elseif (isset($_GET["ObtenerCursos"])) {
+  $select = $con->select("MostrarCursos", "*");
+
+  header("Content-Type: application/json");
+  echo json_encode($select->execute());
+}
 
 elseif (isset($_GET["ObtenerCursos"])) {
   $select = $con->select("Cursos", "idCursos AS ID , NombreCursos AS Nombre");
@@ -76,8 +83,8 @@ elseif (isset($_GET["ObtenerCursos"])) {
 
 
 elseif (isset($_GET["eliminarPregunta"])) {
-  $delete = $con->delete("Preguntas");
-  $delete->where("idPregunta", "=", $_POST["txtId"]);
+  $delete = $con->prepare("call EliminarPregunta(?)");
+  $delete->bindParam(1,$_POST["txtId"]);
 
   if ($delete->execute()) {
     echo "correcto";
@@ -87,30 +94,22 @@ elseif (isset($_GET["eliminarPregunta"])) {
   }
 }
 elseif (isset($_GET["insertarPregunta"])) {
-  $insert = $con->insert("Preguntas", "Pregunta, idCursos, Valor, HoraRegistro");
+  $stmt = $con->prepare("CALL CrearPregunta(?, ?, ?)");
+  $stmt->bindParam(1,$_POST["txtPregunta"] );
+  $stmt->bindParam(2, $_POST["cboCurso"]);
+  $stmt->bindParam(3, $_POST["txtValor"]);
 
-  $insert->value($_POST["txtPregunta"]);
-  $insert->value($_POST["cboCurso"]);
-  $insert->value($_POST["txtValor"]);
-  $insert->values .= ", NOW()";  
 
-  $insert->execute();
+  $stmt->execute();
 
-  $id = $con->lastInsertId();
-
-  if (is_numeric($id)) {
-    echo $id;
-  }
-  else {
-    echo "0";
-  }
 }
 elseif (isset($_GET["modificarPregunta"])) {
-  $update = $con->update("Preguntas");
-  $update->set("idCursos", $_POST["cboCurso"]);
-  $update->set("Valor", $_POST["txtValor"]);
-  $update->set("Pregunta", $_POST["txtPregunta"]);
-  $update->where("idPregunta", "=", $_POST["txtId"]);
+  $update = $con->prepare("call ModificarPregunta(?,?,?,?)");
+  $update->bindParam(1,$_POST["cboCurso"]);
+  $update->bindParam(2, $_POST["txtValor"]);
+  $update->bindParam(3,$_POST["txtPregunta"]);
+  $update->bindParam(4,$_POST["txtId"]);
+
 
   if ($update->execute()) {
     echo "correcto";
@@ -134,7 +133,8 @@ elseif (isset($_GET["PreguntasSinCurso"])){
 }
 elseif (isset($_GET["ValorPorCurso"])){
 
-  $consulta = $con->select("Preguntas","concat( Cursos.NombreCursos , ' : ' , sum(Preguntas.Valor) ) as curso_suma");
+  $consulta = $con->select("Preguntas","concat( Cursos.NombreCursos , ' : ' , 
+  sum(Preguntas.Valor) ) as curso_suma");
   $consulta->innerjoin("Cursos on Cursos.idCursos = Preguntas.idCursos");
   $consulta->groupby("Cursos.NombreCursos");
 

@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Contáctanos</title>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #075E54 0%, #128C7E 50%, #25D366 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .logo-superior {
+            position: fixed;
+            top: 10px;
+            left: 50px;
+            z-index: 9999;
+            animation: flotar 3s ease-in-out infinite;
+        }
+
+        .logo-superior img {
+            height: 130px;
+            width: 200px;
+            display: block;
+            filter: drop-shadow(0 2px 10px rgba(0,0,0,0.3));
+        }
+
+        @keyframes flotar {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(10px); }
+        }
+
+        .contenedor {
+            display: flex;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            align-items: center;
+        }
+
+        .lado-izquierdo {
+            margin: 2rem; 
+            height: 20rem; 
+            width: 28rem;
+            background-image: url('https://tse4.mm.bing.net/th/id/OIP.ZtGhFcANRlWOSnXNzCWW_gHaE8');
+            background-size: cover;
+            background-position: center;
+            border-radius: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .lado-derecho {
+            width: 400px;
+            padding-left: 40px;
+        }
+
+        .area-chat {
+            background: #99f8d4; 
+            height: 450px; 
+            border-radius: 20px; 
+            padding: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .div-chat {
+            flex: 1;
+            overflow-y: auto;
+            margin-bottom: 10px;
+        }
+
+        .mensaje {
+            padding: 10px 15px;
+            border-radius: 15px;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+        }
+
+        form input, form textarea {
+            width: 100%;
+            margin-bottom: 5px;
+            padding: 5px;
+            border-radius: 8px;
+            border: none;
+        }
+
+        .boton-enviar {
+            background: #25D366;
+            color: white;
+            padding: 10px;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="logo-superior">
+    <h2 style="color: white;">Alumnos de</h2>
+    <a href="index.html">
+        <img src="https://i.pinimg.com/736x/5b/19/b2/5b19b2608d4f02c575b62883fef7f4a7.jpg">
+    </a>
+</div>
+
+<div class="contenedor">
+
+    <div class="lado-izquierdo">
+        <a href="https://wa.me/528611285108?text=Hola%20vengo%20desde%20tu%20página" target="_blank">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" width="120">
+        </a>
+    </div>
+
+    <div class="lado-derecho">
+        <h2 style="color: white;">Chat en línea</h2>
+
+        <div class="area-chat">
+
+            <div class="div-chat">
+                <div class="mensaje" style="background:#e1ffc7;">
+                    <strong>Soporte:</strong> ¡Hola! Bienvenido.
+                </div>
+            </div>
+
+            <form id="frmMensaje">
+                <input type="text" id="txtUsuario" placeholder="Tu nombre">
+                <div style="display:flex; gap:10px; margin-bottom:8px; align-items:center;">
+
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <label style="font-size:12px;">🎨 Fondo</label>
+        <input type="color" id="colBg" value="#e1ffc7"
+               style="width:35px; height:35px; padding:0; border:none; cursor:pointer;">
+    </div>                <div style="display:flex; flex-direction:column; align-items:center;">
+        <label style="font-size:12px;">🖋️ Texto</label>
+        <input type="color" id="colTexto" value="#000000"
+               style="width:35px; height:35px; padding:0; border:none; cursor:pointer;">
+    </div>
+
+</div>                <textarea id="txtMensaje" rows="2" placeholder="Escribe tu mensaje"></textarea>
+                <button class="boton-enviar">Enviar</button>
+            </form>
+
+        </div>
+    </div>
+
+</div>
+
+<script>
+    function agregarMensaje(data) {
+        const mensaje = JSON.parse(data);
+
+        $(".div-chat").append(`
+            <div class="mensaje" style="background:${mensaje.colorFondo}; color:${mensaje.colorTexto};">
+                ${mensaje.usuario ? "<strong>"+mensaje.usuario+":</strong> " : ""}
+                ${mensaje.mensaje}
+            </div>
+        `);
+
+        $(".div-chat").scrollTop($(".div-chat")[0].scrollHeight);
+    }
+
+    const conn = new WebSocket("ws://localhost:8080");
+
+    conn.onopen = function () {
+        console.log("Conectado al servidor");
+    };
+
+    conn.onmessage = function (e) {
+        agregarMensaje(e.data);
+    };
+
+    conn.onerror = function (error) {
+        console.log("Error WebSocket:", error);
+    };
+
+    $("#frmMensaje").submit(function (event) {
+        event.preventDefault();
+
+        const mensaje = {
+            tipo: "cliente",
+            colorFondo: $("#colBg").val(),
+            colorTexto: $("#colTexto").val(),
+            usuario: $("#txtUsuario").val(),
+            mensaje: $("#txtMensaje").val()
+        };
+
+        const data = JSON.stringify(mensaje);
+
+        conn.send(data);
+
+        $("#txtMensaje").val("");
+    });
+</script>
+
+</body>
+</html>

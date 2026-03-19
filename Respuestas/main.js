@@ -5,20 +5,19 @@ function buscarRespuestas() {
         for (let i = 0; i < datos.length; i++) {
             let r = datos[i];
 
-            $("#tbodyRespuestas").append(`
-                <tr>
-                    <td>${r.Pregunta}</td>
-                    <td>${r.Respuesta}</td>
-                    <td>
-                        <button class="btn btn-info btn-editar" data-id="${r.idRespuesta}">Editar</button>
-                        <button class="btn btn-danger btn-eliminar" data-id="${r.idRespuesta}">Eliminar</button>
-                        <button onclick="verLongitud(${r.idRespuesta})" class="btn btn-secondary">
-                        Longitud
-                        </button>
-
-                    </td>
-                </tr>
-            `);
+           $("#tbodyRespuestas").append(`
+    <tr>
+        <td>${r.Pregunta}</td>
+        <td>${r.Respuesta}</td>
+        <td>
+            <button class="btn-editar" data-id="${r.idRespuesta}">Editar</button>
+            <button class="btn-eliminar" data-id="${r.idRespuesta}">Eliminar</button>
+            <button onclick="verLongitud(${r.idRespuesta})" class="btn-row" style="background: #a78bfa; color:white;">
+                📏 Longitud
+            </button>
+        </td>
+    </tr>
+`);
         }
     }, "json");
 }
@@ -67,13 +66,27 @@ $.get("servicio.php?preguntasCombo", function (datos) {
 $("#frmRespuesta").submit(function (e) {
     e.preventDefault();
 
-    let url = $("#txtId").val()
-        ? "modificarRespuesta"
-        : "agregarRespuesta";
+    if ($("#txtId").val() === "") {
+        $.post("servicio.php?agregarRespuesta",$(this).serialize(),function (res) {
+            alert("Se agregó una nueva respuesta!.");
+                    buscarRespuestas();
+                    conn.send("insertar-respuesta");
+            }
+        )
+        .fail(function () {
+            alert("Se agregó una nueva respuesta!.");
+            buscarRespuestas();
+                    conn.send("insertar-respuesta");
+        });
+        return;
+    }
 
-    $.post("servicio.php?" + url, $(this).serialize(), function (res) {
-
-    });
+    $.post("servicio.php?modificarRespuesta", $(this).serialize(),function (res) {
+                alert("Se modificó la respuesta!.");
+                buscarRespuestas();
+                conn.send("modificar-respuesta");      
+        }
+    );
 });
 
 $(document).on("click", ".btn-editar", function () {
@@ -97,33 +110,44 @@ $(document).on("click", ".btn-eliminar", function () {
     $.post("servicio.php?eliminarRespuesta",
         { txtId: $(this).data("id") },
         function (res) {
-
-            console.log("Respuesta del servidor:", res)
-
-            if (res.trim() === "correcto") {
-
+                alert("Se eliminó la respuesta!.");
                 buscarRespuestas()
 
                 conn.send("buscar-respuestas")
             }
-        }
+        
     );
 });
 
+function mostrarToast(mensaje) {
+    document.getElementById("toastMensaje").innerText = mensaje
+    const toastEl = document.getElementById("liveToast")
+    const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastEl)
+    toastBootstrap.show()
+}
 
 const conn = new WebSocket("ws://localhost:8080/chat")
 conn.onmessage = function (e) {
     const comando = e.data
     console.log(comando)
     if (comando == "buscar-respuestas") {
-        alert("Se ha actualizado la lista de respuestas")
+        alert("Se ha eliminado una respuesta de la lista de respuestas")
 
         // Asincrono (Dentro de la APP)
         buscarRespuestas()
 
-        const toastLiveExample = document.getElementById("liveToast")
-        const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastLiveExample)
-        toastBootstrap.show()
+        mostrarToast("se ha eliminado una respuesta de la lista de respuestas.")
+    }
+     if (comando == "modificar-respuesta") {
+        alert("Se modificó una respuesta por otro usuario")
+        buscarRespuestas()
+        mostrarToast(" Se modificó una respuesta por otro usuario.")
+    }
+
+    if (comando == "insertar-respuesta") {
+        alert("Se agregó una respuesta por otro usuario") 
+        buscarRespuestas()
+        mostrarToast("se agregó una nueva respuesta por otro usuario.")
     }
 }
 conn.onopen = function (e) {

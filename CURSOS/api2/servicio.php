@@ -39,7 +39,7 @@ require "enviarCorreo.php";
 
 $con = new Conexion(array(
   "tipo"       => "mysql",
-  "servidor"   => "82.180.168.1",
+  "servidor"   => "46.28.42.226",
   "bd"         => "u760464709_24005037_bd",
   "usuario"    => "u760464709_24005037_usr",
   "contrasena" => "N&2lbK=8;Mrt"
