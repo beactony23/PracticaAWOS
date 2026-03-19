@@ -117,6 +117,7 @@ if (isset($_GET["editarRespuesta"])) {
 
 if (isset($_GET["modificarRespuesta"])) {
     $id = $_POST["txtId"];
+    $idPregunta = $_POST["cboPregunta"];
     $respuesta = $_POST["txtRespuesta"];
 
     #$sql = "UPDATE Respuesta
@@ -125,8 +126,9 @@ if (isset($_GET["modificarRespuesta"])) {
 
     #echo $cn->query($sql) ? "correcto" : "error";
 
-    $prepare = $pdo->prepare("CALL modificarRespuesta(:idRespuesta, :respuesta)");
+    $prepare = $pdo->prepare("CALL modificarRespuesta(:idRespuesta, :idPregunta, :respuesta)");
     $prepare->bindParam(":idRespuesta", $_POST["txtId"]);
+    $prepare->bindParam(":idPregunta", $_POST["cboPregunta"]);
     $prepare->bindParam(":respuesta", $_POST["txtRespuesta"]);
     $prepare->execute();
     

@@ -57,7 +57,7 @@ $(document).ready(function() {
                 if (typeof response === 'string' && response.length > 50) {
                     // Guardar token y redireccionar
                     localStorage.setItem('token', response);
-                    window.location.href = 'dashboard.php';
+                    window.location.href = 'index.html';
                 } else if (response.error) {
                     // Mostrar el texto de la variable $error de PHP
                     $('#mensaje-error').text(response.error).fadeIn();
