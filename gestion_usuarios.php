@@ -1,5 +1,6 @@
 <?php
 session_start();
+error_reporting(0);
 require_once "conexion2.php";
 
 /* 🛠 PROCESAR ACCIONES DE ROL */
@@ -51,7 +52,9 @@ $usuarios = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <head>
     <meta charset="UTF-8">
     <title>Gestión de Usuarios</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <style>
+        
         body { font-family: Arial; background: #f4f4f4; }
         table { border-collapse: collapse; width: 85%; margin: 40px auto; background: white; }
         th, td { padding: 10px; border: 1px solid #ccc; text-align: center; }
@@ -132,6 +135,26 @@ $usuarios = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <a href="assets/logout.php">Cerrar sesión</a>
 
 <script>
+
+    if (!localStorage.getItem("jwt")) {
+        location.replace("Login.html");
+    }
+
+    $.ajaxSetup({
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem("jwt")}`
+        }
+    });
+
+    $.get("Login.php?sesion", function(respuesta) {
+        if (respuesta[2] == 1) {
+            return   
+        } else {
+            location.replace("index.html");
+        }
+
+    });
+
     function agregarMensaje(data) {
         const mensaje = JSON.parse(data);
 

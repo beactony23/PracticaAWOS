@@ -1,4 +1,12 @@
-$.get("servicio.php?ObtenerCursos", function (cursos) {
+
+
+$.ajaxSetup({
+    headers: {
+        Authorization: `Bearer ${localStorage.getItem("jwt")}`
+    }
+})
+
+$.get(`servicio.php?ObtenerCursos`, function (cursos) {
     cursos.forEach(curso => {
         $("#cboCurso").append(
             `<option value=${curso["ID"]}>${curso['Nombre']}</option>`
@@ -6,10 +14,32 @@ $.get("servicio.php?ObtenerCursos", function (cursos) {
     });
 })
 
+$.get(`../Login.php?sesion`, function (sesion) {
+
+    if (sesion.length === 0) {
+            window.location.replace("Login.html");
+    } else {
+          return
+    }
+
+    if (sesion.length) {
+        console.log(sesion)
+        $("#btnCerrarSesion")
+        .show()
+        .css("visibility", "visible")
+        return
+    }
+
+        $("#btnIniciarSesion")
+        .show()
+        .css("visibility", "visible")
+        $("#tbodyProductos").html("")
+})
+
 buscarPreguntas()
 
 function buscarPreguntas() {
-    $.get("servicio.php?Preguntas", function (Preguntas) {
+    $.get(`servicio.php?Preguntas`, function (Preguntas) {
         document.getElementById("tbodyPreguntas").innerHTML = ''
 
         Preguntas.forEach(Pregunta => {
@@ -28,6 +58,10 @@ function buscarPreguntas() {
     })
 }
 
+$("#btnCerrarSesion").click(function (event) {
+    localStorage.removeItem("jwt")
+    window.location = "../Login.html?reload"
+})
 
 function mostrarToast(mensaje) {
     document.getElementById("toastMensaje").innerText = mensaje
@@ -42,7 +76,7 @@ conn.onmessage = function (e) {
     const comando = e.data
     console.log(comando)
 
-    if (comando == "eliminarPregunta") {
+    if (comando == "buscarPreguntas") {
         alert("Se eliminó una pregunta por otro usuario")
         buscarPreguntas()
         mostrarToast(" se eliminó una pregunta por otro usuario.")
@@ -58,7 +92,7 @@ conn.onmessage = function (e) {
         alert("Se agregó una pregunta por otro usuario") 
         buscarPreguntas()
         mostrarToast("se agregó una nueva pregunta por otro usuario.")
-    }  
+    }
 }
 
 conn.onopen = function (e) {
@@ -70,11 +104,11 @@ $(document).on("click", ".btn-eliminar", function (event) {
 
     if (!confirm("Deseas eliminar esta pregunta?")) return
 
-    $.post("servicio.php?eliminarPregunta", { txtId: id }, function (respuesta) {
+    $.post(`servicio.php?eliminarPregunta`, { txtId: id }, function (respuesta) {
         if (respuesta == "correcto") {
             alert("Pregunta eliminada correctamente")
             buscarPreguntas()
-            conn.send("eliminarPregunta")
+            conn.send("buscarPreguntas")
         }
     })
 })
@@ -98,7 +132,7 @@ $("#frmProducto").submit(function (event) {
     event.preventDefault()
 
     if ($("#txtId").val()) {
-        $.post("servicio.php?modificarPregunta", $(this).serialize(), function (respuesta) {
+        $.post(`servicio.php?modificarPregunta`, $(this).serialize(), function (respuesta) {
             if (respuesta == "correcto") {
                 alert("Pregunta modificada correctamente")
                 $("#frmProducto").get(0).reset()
@@ -109,7 +143,7 @@ $("#frmProducto").submit(function (event) {
         return
     }
 
-    $.post("servicio.php?insertarPregunta", $(this).serialize(), function (respuesta) {
+    $.post(`servicio.php?insertarPregunta`, $(this).serialize(), function (respuesta) {
         if (respuesta != "0") {
             alert("Pregunta agregada correctamente")
             $("#frmProducto").get(0).reset()

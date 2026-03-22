@@ -1,3 +1,37 @@
+$.ajaxSetup({
+    headers: {
+        Authorization: `Bearer ${localStorage.getItem("jwt")}`
+    }
+})
+
+$("#btnCerrarSesion").click(function (event) {
+    localStorage.removeItem("jwt")
+    window.location = "../Login.html?reload"
+})
+
+$.get(`../Login.php?sesion`, function (sesion) {
+
+    if (sesion.length === 0) {
+            window.location.replace("Login.html");
+    } else {
+          return
+    }
+
+
+    if (sesion.length) {
+        console.log(sesion)
+        $("#btnCerrarSesion")
+        .show()
+        .css("visibility", "visible")
+        return
+    }
+
+        $("#btnIniciarSesion")
+        .show()
+        .css("visibility", "visible")
+        $("#tbodyProductos").html("")
+})
+
 // Función para cargar los datos en el formulario
 function editar(data) {
     document.getElementById('id_edit').value = data.idUsuario; 
@@ -15,25 +49,28 @@ function editar(data) {
     document.getElementById('mensajeError').style.display = 'none';
 }
 
-document.getElementById('progresoForm').onsubmit = async (e) => {
-    e.preventDefault();
-    const errorDisplay = document.getElementById('mensajeError');
-    errorDisplay.style.display = 'none';
+document.addEventListener("DOMContentLoaded", () => {
+    document.getElementById('progresoForm').onsubmit = async (e) => {
+        e.preventDefault();
 
-    const formData = new FormData(e.target);
-    const res = await fetch('api.php', { method: 'POST', body: formData });
-    const result = await res.json();
-    
-    if(result.status === 'success') {
-        e.target.reset();
-        document.getElementById('id_edit').value = "";
-        document.getElementById('idU').readOnly = false;
-        document.getElementById('idP').readOnly = false;
-        document.getElementById('btnSubmit').innerText = "Guardar Datos";
+        const errorDisplay = document.getElementById('mensajeError');
+        errorDisplay.style.display = 'none';
+
+        const formData = new FormData(e.target);
+        const res = await fetch('api.php', { method: 'POST', body: formData });
+        const result = await res.json();
         
-        await cargarTabla(); 
-    } else {
-        errorDisplay.innerText = result.message; 
-        errorDisplay.style.display = 'block';
-    }
-};
+        if(result.status === 'success') {
+            e.target.reset();
+            document.getElementById('id_edit').value = "";
+            document.getElementById('idU').readOnly = false;
+            document.getElementById('idP').readOnly = false;
+            document.getElementById('btnSubmit').innerText = "Guardar Datos";
+            
+            await cargarTabla(); 
+        } else {
+            errorDisplay.innerText = result.message; 
+            errorDisplay.style.display = 'block';
+        }
+    };
+});

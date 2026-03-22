@@ -1,3 +1,38 @@
+$.ajaxSetup({
+    headers: {
+        Authorization: `Bearer ${localStorage.getItem("jwt")}`
+    }
+})
+
+
+$("#btnCerrarSesion").click(function (event) {
+    //localStorage.removeItem("jwt")
+    //window.location = "../Login.html?reload"
+})
+
+$.get(`../Login.php?sesion`, function (sesion) {
+
+    if (sesion.length === 0) {
+            //window.location.replace("Login.html");
+    } else {
+          return
+    }
+
+
+    if (sesion.length) {
+        console.log(sesion)
+        $("#btnCerrarSesion")
+        .show()
+        .css("visibility", "visible")
+        return
+    }
+
+        $("#btnIniciarSesion")
+        .show()
+        .css("visibility", "visible")
+        $("#tbodyProductos").html("")
+})
+
 function buscarRespuestas() {
     $.get("servicio.php?respuestas", function (datos) {
         $("#tbodyRespuestas").html("");

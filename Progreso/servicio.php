@@ -37,6 +37,8 @@ if (isset($_GET["DATETIME"])) {
 require "conexion.php";
 require "enviarCorreo.php";
 
+
+
 $con = new Conexion(array(
   "tipo"       => "mysql",
   "servidor"   => "82.180.168.1",

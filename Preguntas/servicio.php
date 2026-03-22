@@ -39,11 +39,37 @@ $con = new Conexion(array(
   "usuario"    => "u760464709_24005037_usr",
   "contrasena" => "N&2lbK=8;Mrt"
 ));
+require_once '../firebase-php-jwt/vendor/autoload.php';
 
+$JWT_SECRET = "4f9c8e2b1a6d7f903c51e8a4b6f1d2c7a9e5b3c8d1f4a7e2b6c9d0f3a5e8b1c2";
 
+$headers = getallheaders();
 
+$token = "";
+if (isset($headers["Authorization"])) {
+  $token = str_replace("Bearer ", "", $headers["Authorization"]);
+}
 
-if (isset($_GET["Preguntas"])) {
+try {
+  # el segundo parametro es la clave para codificar y decodificar el JWT
+  # debe ser una string no corta, por eso rellené de guiones
+  $decoded = Firebase\JWT\JWT::decode($token, new Firebase\JWT\Key($JWT_SECRET, "HS256"));
+
+  # $usuario puede ser usada para validaciones
+  $usuarioSesion = explode("/", $decoded->sub);
+  $id      = $usuarioSesion[0];
+  $usuario = $usuarioSesion[1];
+  $tipo    = $usuarioSesion[2];
+
+  # $login puede ser usada para validaciones
+  $login = true;
+}
+catch (Exception $error) {
+  $usuarioSesion = array();
+  $login   = false;
+}
+
+if (isset($_GET["Preguntas"]) && $login && $usuarioSesion[2] === "1") {
   $select = $con->select("MostrarPreguntas", "*");
 
   header("Content-Type: application/json");
@@ -51,8 +77,7 @@ if (isset($_GET["Preguntas"])) {
 }
 
 
-
-elseif (isset($_GET["editarPregunta"])) {
+elseif (isset($_GET["editarPregunta"]) && $login && $usuarioSesion[2] === "1") {
   $id = $_GET["txtId"];
 
   $select = $con->select("Preguntas", "*");
@@ -63,26 +88,14 @@ elseif (isset($_GET["editarPregunta"])) {
 }
 
 
-elseif (isset($_GET["ObtenerCursos"])) {
+elseif (isset($_GET["ObtenerCursos"] )  && $login && $usuarioSesion[2] === "1") {
   $select = $con->select("MostrarCursos", "*");
 
   header("Content-Type: application/json");
   echo json_encode($select->execute());
 }
 
-elseif (isset($_GET["ObtenerCursos"])) {
-  $select = $con->select("Cursos", "idCursos AS ID , NombreCursos AS Nombre");
-  $select->orderby("NombreCursos ASC");
-  $select->limit(10);
-
-
-  header("Content-Type: application/json");
-  echo json_encode($select->execute());   
-}
-
-
-
-elseif (isset($_GET["eliminarPregunta"])) {
+elseif (isset($_GET["eliminarPregunta"]) && $login && $usuarioSesion[2] === "1") {
   $delete = $con->prepare("call EliminarPregunta(?)");
   $delete->bindParam(1,$_POST["txtId"]);
 
@@ -93,7 +106,7 @@ elseif (isset($_GET["eliminarPregunta"])) {
     echo "error";
   }
 }
-elseif (isset($_GET["insertarPregunta"])) {
+elseif (isset($_GET["insertarPregunta"]) && $login && $usuarioSesion[2] === "1") {
   $stmt = $con->prepare("CALL CrearPregunta(?, ?, ?)");
   $stmt->bindParam(1,$_POST["txtPregunta"] );
   $stmt->bindParam(2, $_POST["cboCurso"]);
@@ -103,7 +116,7 @@ elseif (isset($_GET["insertarPregunta"])) {
   $stmt->execute();
 
 }
-elseif (isset($_GET["modificarPregunta"])) {
+elseif (isset($_GET["modificarPregunta"]) && $login && $usuarioSesion[2] === "1") {
   $update = $con->prepare("call ModificarPregunta(?,?,?,?)");
   $update->bindParam(1,$_POST["cboCurso"]);
   $update->bindParam(2, $_POST["txtValor"]);
@@ -170,7 +183,7 @@ elseif (isset($_GET["PreguntasHoy"])){
     echo json_encode($data);
 
 }
-elseif (isset($_GET["VerificarCoordenadas"])){
+elseif (isset($_GET["VerificarCoordenadas"]) && $login){
 
   $latitud = $_POST["latitud"];
   $longitud = $_POST["longitud"];

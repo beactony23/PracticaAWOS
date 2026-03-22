@@ -5,6 +5,9 @@
     <title>Gestión de Progreso</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <link rel="stylesheet" href="css">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="js/main.js"></script>
+
 </head>
 <body>
 
@@ -20,6 +23,10 @@
                     <a href="../index.html" class="mb-3">
                             Página Principal
                     </a>
+                    <a id="btnIniciarSesion" class="btn btn-outline-info"  style="visibility: hidden;" href="../Login.html">Iniciar Sesión</a>
+
+                    <button id="btnCerrarSesion" class="btn btn-outline-danger" style="visibility: hidden;">Cerrar Sesión</button>
+
                 </li>
 </div>
         <form id="progresoForm">
@@ -52,6 +59,8 @@
     </table>
 
    <script>
+
+    
     // Función para cargar la tabla sin recargar la página
     async function cargarTabla() {
         try {

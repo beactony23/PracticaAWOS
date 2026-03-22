@@ -1,6 +1,35 @@
 <?php
 include 'conexion.php';
 header('Content-Type: application/json');
+require_once '../firebase-php-jwt/vendor/autoload.php';
+
+$JWT_SECRET = "4f9c8e2b1a6d7f903c51e8a4b6f1d2c7a9e5b3c8d1f4a7e2b6c9d0f3a5e8b1c2";
+
+$headers = getallheaders();
+
+$token = "";
+if (isset($headers["Authorization"])) {
+  $token = str_replace("Bearer ", "", $headers["Authorization"]);
+}
+
+try {
+  # el segundo parametro es la clave para codificar y decodificar el JWT
+  # debe ser una string no corta, por eso rellené de guiones
+  $decoded = Firebase\JWT\JWT::decode($token, new Firebase\JWT\Key($JWT_SECRET, "HS256"));
+
+  # $usuario puede ser usada para validaciones
+  $usuarioSesion = explode("/", $decoded->sub);
+  $id      = $usuarioSesion[0];
+  $usuario = $usuarioSesion[1];
+  $tipo    = $usuarioSesion[2];
+
+  # $login puede ser usada para validaciones
+  $login = true;
+}
+catch (Exception $error) {
+  $usuarioSesion = array();
+  $login   = false;
+}
 
 // 1. OBTENER DATOS CON LOS NOMBRES REALES DE TU BD
 if ($_SERVER['REQUEST_METHOD'] === 'GET' && !isset($_GET['borrar_u'])) {

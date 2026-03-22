@@ -56,14 +56,14 @@ try {
   $login = true;
 }
 catch (Exception $error) {
-  $usuario = array();
+  $usuarioSesion = array();
   $login   = false;
 }
 
 # endpoint para revisar estado de la sesión
 if (isset($_GET["sesion"])) {
   header("Content-Type: application/json");
-  echo json_encode($usuario);
+  echo json_encode($usuarioSesion);
 }
 # endpoint para iniciar sesión
 elseif (isset($_GET["iniciarSesion"])) {

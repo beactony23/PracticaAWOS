@@ -6,6 +6,36 @@ $cn = new mysqli(
 "u760464709_24005037_bd" //base de datos
 );
 
+require_once '../firebase-php-jwt/vendor/autoload.php';
+
+$JWT_SECRET = "4f9c8e2b1a6d7f903c51e8a4b6f1d2c7a9e5b3c8d1f4a7e2b6c9d0f3a5e8b1c2";
+
+$headers = getallheaders();
+
+$token = "";
+if (isset($headers["Authorization"])) {
+  $token = str_replace("Bearer ", "", $headers["Authorization"]);
+}
+
+try {
+  # el segundo parametro es la clave para codificar y decodificar el JWT
+  # debe ser una string no corta, por eso rellené de guiones
+  $decoded = Firebase\JWT\JWT::decode($token, new Firebase\JWT\Key($JWT_SECRET, "HS256"));
+
+  # $usuario puede ser usada para validaciones
+  $usuarioSesion = explode("/", $decoded->sub);
+  $id      = $usuarioSesion[0];
+  $usuario = $usuarioSesion[1];
+  $tipo    = $usuarioSesion[2];
+
+  # $login puede ser usada para validaciones
+  $login = true;
+}
+catch (Exception $error) {
+  $usuarioSesion = array();
+  $login   = false;
+}
+
 $cn->set_charset("utf8mb4");
 
 $host = "46.28.42.226";
@@ -23,7 +53,7 @@ $pdo = new PDO(
     die("Error de conexión a la base de datos");
 }
 
-if (isset($_GET["respuestas"])) {
+if (isset($_GET["respuestas"]) && $login && $usuarioSesion[2] === "1") {
     $sql = "SELECT * FROM View_Respuestas";
     $res = $cn->query($sql);
 
@@ -35,7 +65,7 @@ if (isset($_GET["respuestas"])) {
     echo json_encode($datos);
 }
 
-if (isset($_GET["PreguntasSinrespuestas"])) {
+if (isset($_GET["PreguntasSinrespuestas"]) && $login && $usuarioSesion[2] === "1") {
 
     $sql = "SELECT * FROM `view_RespuestasSinPreguntas`";
 
@@ -50,7 +80,7 @@ if (isset($_GET["PreguntasSinrespuestas"])) {
     exit;
 }
 
-if (isset($_GET["preguntasSinRespuestaSub"])) {
+if (isset($_GET["preguntasSinRespuestaSub"]) && $login && $usuarioSesion[2] === "1") {
 
     $sql = "
         SELECT idPregunta, Pregunta
@@ -72,7 +102,7 @@ if (isset($_GET["preguntasSinRespuestaSub"])) {
 }
 
 
-if (isset($_GET["preguntasCombo"])) {
+if (isset($_GET["preguntasCombo"]) && $login && $usuarioSesion[2] === "1") {
     $sql = "SELECT idPregunta AS value, Pregunta AS label FROM Preguntas";
     $res = $cn->query($sql);
 
@@ -84,7 +114,7 @@ if (isset($_GET["preguntasCombo"])) {
     echo json_encode($datos);
 }
 
-if (isset($_GET["agregarRespuesta"])) {
+if (isset($_GET["agregarRespuesta"]) && $login &&$usuarioSesion[2] === "1") {
     $respuesta = $_POST["txtRespuesta"];
     $idPregunta = $_POST["cboPregunta"];
 
@@ -106,7 +136,7 @@ if (isset($_GET["agregarRespuesta"])) {
 
 }
 
-if (isset($_GET["editarRespuesta"])) {
+if (isset($_GET["editarRespuesta"]) && $login &&$usuarioSesion[2] === "1") {
     $id = $_GET["id"];
 
     $sql = "SELECT * FROM Respuesta WHERE idRespuesta = $id";
@@ -115,8 +145,9 @@ if (isset($_GET["editarRespuesta"])) {
     echo json_encode($res->fetch_all(MYSQLI_ASSOC));
 }
 
-if (isset($_GET["modificarRespuesta"])) {
+if (isset($_GET["modificarRespuesta"]) && $login &&$usuarioSesion[2] === "1") {
     $id = $_POST["txtId"];
+    $idPregunta = $_POST["cboPregunta"];
     $respuesta = $_POST["txtRespuesta"];
 
     #$sql = "UPDATE Respuesta
@@ -125,8 +156,9 @@ if (isset($_GET["modificarRespuesta"])) {
 
     #echo $cn->query($sql) ? "correcto" : "error";
 
-    $prepare = $pdo->prepare("CALL modificarRespuesta(:idRespuesta, :respuesta)");
+    $prepare = $pdo->prepare("CALL modificarRespuesta(:idRespuesta, :idPregunta, :respuesta)");
     $prepare->bindParam(":idRespuesta", $_POST["txtId"]);
+    $prepare->bindParam(":idPregunta", $_POST["cboPregunta"]);
     $prepare->bindParam(":respuesta", $_POST["txtRespuesta"]);
     $prepare->execute();
     
@@ -135,7 +167,7 @@ if (isset($_GET["modificarRespuesta"])) {
     echo json_encode(["status" => "correcto"]);
 }
 
-if (isset($_GET["eliminarRespuesta"])) {
+if (isset($_GET["eliminarRespuesta"]) && $login &&$usuarioSesion[2] === "1") {
     $id = $_POST["txtId"];
 
     $prepare = $pdo->prepare("CALL eliminarRespuesta(:idRespuesta)");
