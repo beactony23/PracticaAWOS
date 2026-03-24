@@ -1,3 +1,5 @@
+const API = "https://thereby-children-enquiries-effect.trycloudflare.com/4B/Api-GitHub/PracticaAWOS"
+
 $.ajaxSetup({
     headers: {
         Authorization: `Bearer ${localStorage.getItem("jwt")}`
@@ -10,7 +12,7 @@ $("#btnCerrarSesion").click(function (event) {
     //window.location = "../Login.html?reload"
 })
 
-$.get(`../Login.php?sesion`, function (sesion) {
+$.get(`${API}/Login.php?sesion`, function (sesion) {
 
     if (sesion.length === 0) {
             //window.location.replace("Login.html");
@@ -34,7 +36,7 @@ $.get(`../Login.php?sesion`, function (sesion) {
 })
 
 function buscarRespuestas() {
-    $.get("servicio.php?respuestas", function (datos) {
+    $.get(`${API}/Respuestas/servicio.php?respuestas`, function (datos) {
         $("#tbodyRespuestas").html("");
 
         for (let i = 0; i < datos.length; i++) {
@@ -59,7 +61,7 @@ function buscarRespuestas() {
 
 
 function mostrarPreguntasSinRespuesta() {
-    $.get("servicio.php?PreguntasSinrespuestas", function (datos) {
+    $.get(`${API}/Respuestas/servicio.php?PreguntasSinrespuestas`, function (datos) {
         $("#tbodyRespuestas").html("");
 
         for (let i = 0; i < datos.length; i++) {
@@ -86,7 +88,7 @@ $(document).on("click", "#btnRespuestas", function () {
 
 buscarRespuestas();
 
-$.get("servicio.php?preguntasCombo", function (datos) {
+$.get(`${API}/Respuestas/servicio.php?preguntasCombo`, function (datos) {
     $("#cboPregunta").html("");
 
     for (let x in datos) {
@@ -102,7 +104,7 @@ $("#frmRespuesta").submit(function (e) {
     e.preventDefault();
 
     if ($("#txtId").val() === "") {
-        $.post("servicio.php?agregarRespuesta",$(this).serialize(),function (res) {
+        $.post(`${API}/Respuestas/servicio.php?agregarRespuesta`,$(this).serialize(),function (res) {
             alert("Se agregó una nueva respuesta!.");
                     buscarRespuestas();
                     conn.send("insertar-respuesta");
@@ -116,7 +118,7 @@ $("#frmRespuesta").submit(function (e) {
         return;
     }
 
-    $.post("servicio.php?modificarRespuesta", $(this).serialize(),function (res) {
+    $.post(`${API}/Respuestas/servicio.php?modificarRespuesta`, $(this).serialize(),function (res) {
                 alert("Se modificó la respuesta!.");
                 buscarRespuestas();
                 conn.send("modificar-respuesta");      
@@ -129,7 +131,7 @@ $(document).on("click", ".btn-editar", function () {
 
     let id = $(this).data("id");
 
-    $.get("servicio.php?editarRespuesta", { id }, function (data) {
+    $.get(`${API}/Respuestas/servicio.php?editarRespuesta`, { id }, function (data) {
 
         let r = data[0];
         $("#txtId").val(r.idRespuesta);
@@ -142,7 +144,7 @@ $(document).on("click", ".btn-editar", function () {
 $(document).on("click", ".btn-eliminar", function () {
     if (!confirm("¿Eliminar respuesta?")) return;
 
-    $.post("servicio.php?eliminarRespuesta",
+    $.post(`${API}/Respuestas/servicio.php?eliminarRespuesta`,
         { txtId: $(this).data("id") },
         function (res) {
                 alert("Se eliminó la respuesta!.");
@@ -190,19 +192,19 @@ conn.onopen = function (e) {
 }
 
 $("#btnTotal").click(function () {
-    $.get("servicio.php?totalRespuestas", function (d) {
+    $.get(`${API}/Respuestas/servicio.php?totalRespuestas`, function (d) {
         alert("Total de respuestas: " + d.totalRespuestas);
     }, "json");
 });
 
 function verLongitud(id) {
-    $.get("servicio.php?longitudRespuesta&id=" + id, function (d) {
+    $.get(`${API}/Respuestas/servicio.php?longitudRespuesta&id=` + id, function (d) {
         alert("La respuesta tiene " + d.longitud + " caracteres");
     }, "json");
 }
 
 $("#btnHoy").click(function () {
-    $.get("servicio.php?respuestasHoy", function (d) {
+    $.get(`${API}/Respuestas/servicio.php?respuestasHoy`, function (d) {
         alert("Respuestas registradas hoy: " + d.total);
     }, "json");
 });
