@@ -112,6 +112,7 @@ if ($method === 'POST') {
     }
 
     if ($accion === 'eliminar' && $login) {
+
         $idU = $_POST['idUsuario'];
         $idP = $_POST['idPregunta'];
 

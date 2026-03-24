@@ -1,3 +1,5 @@
+const API ="https://listing-mode-sam-ram.trycloudflare.com/4B/Api-GitHub/PracticaAWOS/Progreso/";
+
 // ==========================================
 // 1. CARGAR DATOS (READ - GET)
 // ==========================================
@@ -9,7 +11,7 @@ $.ajaxSetup({
 
 
 function cargarTabla() {
-    $.get("api.php?accion=listar", function (datos) {
+    $.get(`${API}api.php?accion=listar`, function (datos) {
         let html = '';
 
         datos.forEach(p => {
@@ -47,7 +49,7 @@ $("#progresoForm").submit(function (e) {
     e.preventDefault();
     $('#mensajeError').hide();
 
-    let endpoint = $("#id_edit").val() === "" ? "api.php?accion=guardar" : "api.php?accion=modificar";
+    let endpoint = $("#id_edit").val() === "" ? `${API}api.php?accion=guardar` : `${API}api.php?accion=modificar`;
 
     $.post(endpoint, $(this).serialize(), function (res) {
         if (res.status === "correcto") {
@@ -109,7 +111,7 @@ function cancelarEdicion() {
 function eliminarRegistro(u, p) {
     if (!confirm('¿Seguro que deseas eliminar este progreso?')) return;
 
-    $.post("api.php?accion=eliminar", { idUsuario: u, idPregunta: p }, function (res) {
+    $.post(`${API}api.php?accion=eliminar`, { idUsuario: u, idPregunta: p }, function (res) {
         if (res.status === "correcto") {
             alert("¡Registro eliminado con éxito!");
             cargarTabla();
