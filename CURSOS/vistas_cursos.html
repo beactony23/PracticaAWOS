@@ -3,62 +3,161 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestión de Cursos</title>
+    <title>Gestión de Cursos | EduSystem</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --clr-bg: #f5f7f2;
+            --clr-card: #ffffff;
+            --clr-primary: #2d5c34;
+            --clr-secondary: #5c8c62;
+            --clr-accent1: #8aab8e;
+            --clr-accent2: #b4cdb7;
+            --clr-accent3: #ddeedd;
+            --clr-text: #1e2620;
+            --clr-muted: #6b7c6d;
+            --radius: 18px;
+            --shadow: 0 8px 32px rgba(44,92,52,0.13);
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: var(--clr-bg);
+            color: var(--clr-text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Blobs de fondo */
+        .bg-blobs { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+        .blob { position: absolute; border-radius: 50%; filter: blur(70px); opacity: 0.18; animation: floatBlob 12s ease-in-out infinite alternate; }
+        .blob-1 { width: 520px; height: 520px; background: var(--clr-primary); top: -120px; left: -100px; }
+        .blob-2 { width: 380px; height: 380px; background: var(--clr-secondary); bottom: -80px; right: -80px; animation-delay: -4s; }
+        .blob-3 { width: 280px; height: 280px; background: var(--clr-accent1); top: 40%; left: 55%; animation-delay: -7s; }
+        @keyframes floatBlob { 0% { transform: translate(0,0) scale(1); } 100% { transform: translate(30px, 40px) scale(1.08); } }
+
+        /* Header Estilo Edu */
+        .edu-header { position: relative; z-index: 10; padding: 28px 32px 20px; display: flex; align-items: center; gap: 16px; animation: slideDown .6s cubic-bezier(.34,1.56,.64,1) both; }
+        .edu-logo { width: 48px; height: 48px; background: linear-gradient(135deg, var(--clr-primary), var(--clr-secondary)); border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; box-shadow: 0 4px 16px rgba(44,92,52,0.35); }
+        .edu-brand { font-family: 'Fredoka One', cursive; font-size: 2rem; background: linear-gradient(135deg, var(--clr-primary), var(--clr-secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; line-height: 1; }
+        .edu-brand span { font-size: .85rem; font-family: 'Nunito', sans-serif; font-weight: 700; -webkit-text-fill-color: var(--clr-muted); display: block; }
+
+        /* Layout Principal */
+        .main-layout { position: relative; z-index: 10; display: grid; grid-template-columns: 360px 1fr; gap: 24px; padding: 0 32px 40px; align-items: start; }
+        @media (max-width: 992px) { .main-layout { grid-template-columns: 1fr; padding: 0 16px 40px; } }
+
+        /* Cards */
+        .edu-card { background: var(--clr-card); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; animation: fadeUp .5s ease both; margin-bottom: 20px; }
+        .card-header-edu { padding: 20px 24px 16px; display: flex; align-items: center; gap: 12px; border-bottom: 2px solid var(--clr-bg); }
+        .card-header-edu h2 { font-family: 'Fredoka One', cursive; font-size: 1.2rem; color: var(--clr-text); margin: 0; }
+        .card-body-edu { padding: 22px 24px; }
+
+        /* Inputs y Botones */
+        .form-label-edu { display: block; font-weight: 700; font-size: .82rem; color: var(--clr-muted); text-transform: uppercase; margin-bottom: 6px; }
+        .form-control-edu { width: 100%; padding: 10px 14px; border: 2px solid #c8dfc9; border-radius: 12px; font-weight: 600; background: #fafcfa; outline: none; transition: 0.2s; }
+        .form-control-edu:focus { border-color: var(--clr-primary); box-shadow: 0 0 0 4px rgba(44,92,52,.12); background: #fff; }
+        
+        .btn-edu { display: inline-flex; align-items: center; gap: 6px; padding: 10px 22px; border-radius: 50px; border: none; font-weight: 800; font-size: .9rem; transition: 0.18s; cursor: pointer; text-decoration: none; }
+        .btn-save { background: linear-gradient(135deg, var(--clr-primary), var(--clr-secondary)); color: #fff; box-shadow: 0 4px 16px rgba(44,92,52,.4); }
+        .btn-cancel { background: #f0f5f0; color: var(--clr-muted); }
+        .btn-edu:hover { transform: translateY(-2px); filter: brightness(1.1); color: inherit; }
+
+        /* Tabla */
+        .table-wrap { overflow-x: auto; border-radius: 14px; }
+        .edu-table { width: 100%; border-collapse: separate; border-spacing: 0; }
+        .edu-table thead tr { background: linear-gradient(135deg, #ddeedd, #c8dfc9); }
+        .edu-table th { padding: 12px 16px; font-weight: 800; font-size: .78rem; text-transform: uppercase; color: var(--clr-primary); border-bottom: 2px solid #c8dfc9; }
+        .edu-table td { padding: 12px 16px; border-bottom: 1px solid #e8f0e9; vertical-align: middle; }
+
+        @keyframes slideDown { from { opacity:0; transform: translateY(-32px); } to { opacity:1; transform: translateY(0); } }
+        @keyframes fadeUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+    </style>
 </head>
-<body class="bg-light">
+<body>
 
-<div class="container mt-5">
-    <h2 class="text-center mb-4">📘 REGISTRO DE CURSOS</h2>
-
-    <div class="card p-4 shadow-sm mb-4">
-        <form id="formCurso"> <input type="hidden" name="txtid" id="txtid">
-            
-            <div class="mb-3">
-                <label class="form-label fw-bold">Nombre del curso:</label>
-                <input type="text" name="txtnombre" id="txtnombre" class="form-control" placeholder="Escribe el nombre del curso..." required>
-            </div>
-
-            <div class="d-flex gap-2">
-                <button type="submit" class="btn btn-success" id="btnGuardar">Guardar</button>
-                <button type="button" class="btn btn-secondary" id="btnCancelar">✕ Cancelar</button>
-            </div>
-        </form>
-    </div>
-
-    <div class="card p-3 shadow-sm mb-4">
-        <form method="GET" action="vistas_cursos.html">
-            <div class="input-group">
-                <input type="text" name="txtbuscar" class="form-control" placeholder="Buscar curso...">
-                <button type="submit" class="btn btn-primary">Buscar</button>
-                <a href="vistas_cursos.html" class="btn btn-outline-secondary">Limpiar</a>
-            </div>
-        </form>
-    </div>
-
-    <div class="card shadow-sm">
-        <div class="table-responsive">
-            <table class="table table-bordered table-hover text-center mb-0">
-                <thead class="table-dark">
-                    <tr>
-                        <th style="width: 15%;">ID</th>
-                        <th>Nombre del Curso</th>
-                        <th style="width: 25%;">Acciones</th>
-                    </tr>
-                </thead>
-                <tbody id="tablaCursos">
-                    <tr>
-                        <td colspan="3" class="text-muted">Cargando cursos...</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
+<div class="bg-blobs">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
 </div>
+
+<header class="edu-header">
+    <div class="edu-logo">📘</div>
+    <div class="edu-brand">
+        EduSystem
+        <span>GESTIÓN DE CURSOS</span>
+    </div>
+</header>
+
+<main class="main-layout">
+    <aside>
+        <div class="edu-card">
+            <div class="card-header-edu">
+                <h2>Registro</h2>
+            </div>
+            <div class="card-body-edu">
+                <form id="formCurso">
+                    <input type="hidden" name="txtid" id="txtid">
+                    <div class="mb-4">
+                        <label class="form-label-edu">Nombre del curso</label>
+                        <input type="text" name="txtnombre" id="txtnombre" class="form-control-edu" placeholder="Ej: Matemáticas Avanzadas" required>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn-edu btn-save" id="btnGuardar">Guardar</button>
+                        <button type="button" class="btn-edu btn-cancel" id="btnCancelar">✕</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="edu-card">
+            <div class="card-header-edu">
+                <h2>Buscador</h2>
+            </div>
+            <div class="card-body-edu">
+                <form method="GET" action="vistas_cursos.html">
+                    <div class="mb-3">
+                        <input type="text" name="txtbuscar" class="form-control-edu mb-2" placeholder="Buscar curso...">
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn-edu btn-save w-100 justify-content-center">Buscar</button>
+                        <a href="vistas_cursos.html" class="btn-edu btn-cancel">Limpiar</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </aside>
+
+    <section>
+        <div class="edu-card">
+            <div class="card-header-edu">
+                <h2>Listado de Cursos</h2>
+            </div>
+            <div class="table-wrap">
+                <table class="edu-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 10%;">ID</th>
+                            <th>Nombre del Curso</th>
+                            <th style="width: 20%; text-align: center;">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tablaCursos">
+                        <tr>
+                            <td colspan="3" class="text-center py-4 text-muted">Cargando cursos...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+</main>
 
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="script.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
 </body>
 </html>

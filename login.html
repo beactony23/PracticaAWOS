@@ -2,45 +2,609 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Login</title>
-  <link rel="stylesheet" href="assets/estilosLR.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login · AmphIQ</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet">
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   <script src="js/login.js"></script>
+
+  <style>
+    :root {
+      --sage:       #8aab8e;
+      --sage-light: #b4cdb7;
+      --sage-pale:  #ddeedd;
+      --sage-deep:  #5c8c62;
+      --forest:     #2d5c34;
+      --cream:      #f5f7f2;
+      --charcoal:   #1e2620;
+      --muted:      #6b7c6d;
+      --white:      #ffffff;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body { height: 100%; }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: var(--cream);
+      display: flex;
+      align-items: stretch;
+      min-height: 100vh;
+      overflow: hidden;
+    }
+
+    /* ── CUSTOM CURSOR ─────────────────────── */
+    #cursor-dot {
+      width: 8px; height: 8px;
+      background: var(--sage-deep);
+      border-radius: 50%;
+      position: fixed;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      opacity: 0;
+      transition: opacity .3s;
+    }
+    #cursor-ring {
+      width: 32px; height: 32px;
+      border: 1.5px solid rgba(92,140,98,.5);
+      border-radius: 50%;
+      position: fixed;
+      pointer-events: none;
+      z-index: 9998;
+      transform: translate(-50%, -50%);
+      opacity: 0;
+      transition: width .3s, height .3s, opacity .3s;
+    }
+
+    /* ── LEFT PANEL ────────────────────────── */
+    .auth-left {
+      width: 45%;
+      background: linear-gradient(155deg, #2d5c34 0%, #3d7a45 40%, #5c8c62 100%);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 4rem 4rem;
+      overflow: hidden;
+    }
+
+    /* animated blobs */
+    .auth-left::before, .auth-left::after {
+      content: '';
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(55px);
+      animation: blobDrift 9s ease-in-out infinite alternate;
+    }
+    .auth-left::before {
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(180,205,183,.35) 0%, transparent 70%);
+      top: -120px; left: -80px;
+    }
+    .auth-left::after {
+      width: 300px; height: 300px;
+      background: radial-gradient(circle, rgba(138,171,142,.25) 0%, transparent 70%);
+      bottom: -60px; right: -40px;
+      animation-delay: -4s;
+      animation-duration: 12s;
+    }
+
+    @keyframes blobDrift {
+      from { transform: translate(0,0) scale(1); }
+      to   { transform: translate(30px,25px) scale(1.08); }
+    }
+
+    /* particles left */
+    .particles {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    .particle {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255,255,255,.15);
+      opacity: 0;
+      animation: particleFloat linear infinite;
+    }
+    @keyframes particleFloat {
+      0%   { transform: translateY(100%) scale(0); opacity: 0; }
+      10%  { opacity: .3; }
+      90%  { opacity: .1; }
+      100% { transform: translateY(-10%) scale(1); opacity: 0; }
+    }
+
+    .left-content { position: relative; z-index: 2; }
+
+    .brand {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.6rem;
+      color: rgba(255,255,255,.9);
+      margin-bottom: 3.5rem;
+      letter-spacing: -.5px;
+      opacity: 0;
+      animation: fadeUp .6s .1s forwards;
+    }
+
+    .left-heading {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(2.4rem, 4vw, 3.5rem);
+      color: var(--white);
+      line-height: 1.1;
+      margin-bottom: 1.2rem;
+      opacity: 0;
+      animation: fadeUp .7s .3s forwards;
+    }
+
+    .left-heading span {
+      color: var(--sage-pale);
+      font-style: italic;
+    }
+
+    .left-sub {
+      color: rgba(255,255,255,.65);
+      font-size: 1rem;
+      line-height: 1.65;
+      max-width: 320px;
+      margin-bottom: 3rem;
+      opacity: 0;
+      animation: fadeUp .7s .5s forwards;
+    }
+
+    /* feature pills */
+    .feature-pills {
+      display: flex;
+      flex-direction: column;
+      gap: .75rem;
+      opacity: 0;
+      animation: fadeUp .7s .7s forwards;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: .7rem;
+      background: rgba(255,255,255,.1);
+      border: 1px solid rgba(255,255,255,.15);
+      border-radius: 100px;
+      padding: .55rem 1rem;
+      color: rgba(255,255,255,.85);
+      font-size: .85rem;
+      font-weight: 500;
+      width: fit-content;
+      backdrop-filter: blur(6px);
+      transition: background .25s, transform .25s;
+    }
+    .pill:hover {
+      background: rgba(255,255,255,.18);
+      transform: translateX(4px);
+    }
+    .pill i {
+      font-size: 1rem;
+      color: var(--sage-pale);
+    }
+
+    /* ── RIGHT PANEL ───────────────────────── */
+    .auth-right {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 3rem 2rem;
+      background: var(--cream);
+      position: relative;
+    }
+
+    .form-card {
+      width: 100%;
+      max-width: 400px;
+      opacity: 0;
+      animation: fadeIn .8s .4s forwards;
+    }
+
+    .form-card .greet {
+      font-size: .8rem;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--sage-deep);
+      margin-bottom: .5rem;
+    }
+
+    .form-card h2 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 2rem;
+      color: var(--forest);
+      margin-bottom: .4rem;
+    }
+
+    .form-card .subtitle {
+      font-size: .9rem;
+      color: var(--muted);
+      margin-bottom: 2rem;
+    }
+    .form-card .subtitle a {
+      color: var(--sage-deep);
+      font-weight: 600;
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      transition: border-color .2s;
+    }
+    .form-card .subtitle a:hover { border-color: var(--sage-deep); }
+
+    /* error box */
+    #mensaje-error {
+      display: none;
+      background: #fdf0f0;
+      border: 1px solid #f5c6cb;
+      color: #721c24;
+      padding: .8rem 1rem;
+      border-radius: 10px;
+      font-size: .88rem;
+      margin-bottom: 1.2rem;
+      text-align: center;
+      animation: shakeX .4s ease;
+    }
+    @keyframes shakeX {
+      0%,100%{ transform: translateX(0); }
+      20%    { transform: translateX(-6px); }
+      40%    { transform: translateX(6px); }
+      60%    { transform: translateX(-4px); }
+      80%    { transform: translateX(4px); }
+    }
+
+    /* input group */
+    .input-group-field {
+      margin-bottom: 1.2rem;
+      position: relative;
+    }
+
+    .input-group-field label {
+      display: block;
+      font-size: .82rem;
+      font-weight: 600;
+      color: var(--charcoal);
+      margin-bottom: .4rem;
+      letter-spacing: .02em;
+    }
+
+    .input-wrap {
+      position: relative;
+    }
+
+    .input-wrap i {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--sage);
+      font-size: 1rem;
+      pointer-events: none;
+      transition: color .2s;
+    }
+
+    .input-wrap input {
+      width: 100%;
+      padding: .85rem 1rem .85rem 2.8rem;
+      border: 1.5px solid rgba(138,171,142,.35);
+      border-radius: 12px;
+      background: var(--white);
+      font-family: 'Outfit', sans-serif;
+      font-size: .95rem;
+      color: var(--charcoal);
+      outline: none;
+      transition: border-color .25s, box-shadow .25s;
+    }
+
+    .input-wrap input::placeholder { color: #afc4b1; }
+
+    .input-wrap input:focus {
+      border-color: var(--sage-deep);
+      box-shadow: 0 0 0 3px rgba(92,140,98,.15);
+    }
+
+    .input-wrap input:focus + i,
+    .input-wrap:focus-within i {
+      color: var(--sage-deep);
+    }
+
+    /* password toggle */
+    .toggle-pass {
+      position: absolute;
+      right: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 1rem;
+      background: none;
+      border: none;
+      padding: 0;
+      pointer-events: all;
+      transition: color .2s;
+    }
+    .toggle-pass:hover { color: var(--forest); }
+
+    /* submit button */
+    .btn-submit {
+      width: 100%;
+      padding: .9rem;
+      background: var(--forest);
+      color: var(--white);
+      border: none;
+      border-radius: 12px;
+      font-family: 'Outfit', sans-serif;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      letter-spacing: .02em;
+      margin-top: .5rem;
+      position: relative;
+      overflow: hidden;
+      transition: background .25s, transform .2s, box-shadow .25s;
+      box-shadow: 0 6px 20px rgba(45,92,52,.28);
+    }
+
+    .btn-submit::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(255,255,255,0);
+      transition: background .2s;
+    }
+
+    .btn-submit:hover {
+      background: var(--sage-deep);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 28px rgba(45,92,52,.35);
+    }
+
+    .btn-submit:active { transform: translateY(0); }
+
+    /* ripple */
+    .ripple {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255,255,255,.3);
+      transform: scale(0);
+      animation: rippleAnim .5s linear;
+      pointer-events: none;
+    }
+    @keyframes rippleAnim {
+      to { transform: scale(4); opacity: 0; }
+    }
+
+    /* divider */
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin: 1.5rem 0;
+      color: var(--muted);
+      font-size: .82rem;
+    }
+    .divider::before, .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: rgba(138,171,142,.3);
+    }
+
+    /* bottom link */
+    .bottom-link {
+      text-align: center;
+      font-size: .85rem;
+      color: var(--muted);
+      margin-top: 1.5rem;
+    }
+    .bottom-link a {
+      color: var(--sage-deep);
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    /* ── WHATSAPP BTN ──────────────────────── */
+    .wsp-btn {
+      position: fixed;
+      bottom: 1.8rem;
+      right: 1.8rem;
+      width: 52px; height: 52px;
+      background: #25d366;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      box-shadow: 0 4px 18px rgba(37,211,102,.4);
+      z-index: 100;
+      transition: transform .25s, box-shadow .25s;
+      animation: wspPop .5s 1.5s both;
+    }
+    .wsp-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 8px 28px rgba(37,211,102,.5);
+    }
+    .wsp-btn img { width: 28px; height: 28px; }
+    @keyframes wspPop {
+      from { transform: scale(0) rotate(-30deg); opacity: 0; }
+      to   { transform: scale(1) rotate(0deg); opacity: 1; }
+    }
+
+    /* ── SHARED KEYFRAMES ──────────────────── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateX(20px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+
+    /* ── RESPONSIVE ────────────────────────── */
+    @media (max-width: 768px) {
+      body { flex-direction: column; overflow: auto; }
+      .auth-left {
+        width: 100%;
+        padding: 3rem 2rem 2.5rem;
+        min-height: 45vh;
+      }
+      .auth-right { padding: 2.5rem 1.5rem 5rem; }
+      .feature-pills { flex-direction: row; flex-wrap: wrap; }
+    }
+  </style>
 </head>
-<body class="auth">
-<div class="auth-wrapper">
-  <div class="auth-left">
-    <h1>Hola<br>usuario!</h1>
-    <p>Bienvenido de nuevo.<br>Inicia sesión para continuar.</p>
-  </div>
-  <div class="auth-right">
-    <h2>Iniciar sesión</h2>
-    <p>¿No tienes cuenta? <a href="register.php">Regístrate</a></p>
-    <form method="POST" name="frmlogin" id="frmlogin">
-      <div id="mensaje-error" style="
-        display: none; 
-        background-color: #f8d7da; 
-        color: #721c24; 
-        padding: 10px; 
-        border-radius: 5px; 
-        margin-bottom: 15px; 
-        border: 1px solid #f5c6cb;
-        font-size: 0.9em;
-        text-align: center;">
+<body>
+
+<!-- Custom cursor -->
+<div id="cursor-dot"></div>
+<div id="cursor-ring"></div>
+
+<!-- ── LEFT ──────────────────────────────── -->
+<div class="auth-left">
+  <div class="particles" id="particles"></div>
+  <div class="left-content">
+
+    <div class="brand">AmphIQ</div>
+
+    <h1 class="left-heading">
+      Hola,<br><span>bienvenido</span><br>de nuevo!
+    </h1>
+
+    <p class="left-sub">
+      Inicia sesión para continuar tu aprendizaje donde lo dejaste.
+    </p>
+
+    <div class="feature-pills">
+      <div class="pill"><i class="bi bi-lightning-charge"></i> Aprendizaje interactivo</div>
+      <div class="pill"><i class="bi bi-bar-chart-line"></i> Sigue tu progreso</div>
+      <div class="pill"><i class="bi bi-shield-check"></i> Cuenta segura</div>
     </div>
-      <label>Email</label>
-      <input type="email" name="email" placeholder="correo@ejemplo.com" required>
-      <label>Contraseña</label>
-      <input type="password" name="pass" placeholder="********" required>
-      <button type="submit">Entrar</button>
-    </form>
+
   </div>
 </div>
+
+<!-- ── RIGHT ─────────────────────────────── -->
+<div class="auth-right">
+  <div class="form-card">
+
+    <div class="greet">Plataforma educativa</div>
+    <h2>Iniciar sesión</h2>
+    <p class="subtitle">¿No tienes cuenta? <a href="register.php">Regístrate gratis</a></p>
+
+    <form method="POST" name="frmlogin" id="frmlogin">
+
+      <div id="mensaje-error"></div>
+
+      <div class="input-group-field">
+        <label>Correo electrónico</label>
+        <div class="input-wrap">
+          <input type="email" name="email" placeholder="correo@ejemplo.com" required autocomplete="email">
+          <i class="bi bi-envelope"></i>
+        </div>
+      </div>
+
+      <div class="input-group-field">
+        <label>Contraseña</label>
+        <div class="input-wrap" style="position:relative;">
+          <input type="password" name="pass" id="passInput" placeholder="••••••••" required autocomplete="current-password">
+          <i class="bi bi-lock"></i>
+          <button type="button" class="toggle-pass" id="togglePass">
+            <i class="bi bi-eye" id="eyeIcon"></i>
+          </button>
+        </div>
+      </div>
+
+      <button type="submit" class="btn-submit" id="btnSubmit">
+        Entrar
+      </button>
+
+    </form>
+
+    <div class="bottom-link">
+      <a href="Register.html">¿Nuevo aquí? Crea tu cuenta →</a>
+    </div>
+
+  </div>
+</div>
+
+<!-- WhatsApp -->
 <a href="https://wa.me/5218441234567?text=Hola" class="wsp-btn" target="_blank">
-   <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp">
 </a>
-</body>
+
 <script>
-    localStorage.removeItem('jwt');
+  /* ── Custom cursor ── */
+  const dot  = document.getElementById('cursor-dot');
+  const ring = document.getElementById('cursor-ring');
+  let rx = 0, ry = 0, animFrame;
+
+  document.addEventListener('mousemove', e => {
+    dot.style.opacity  = '1';
+    ring.style.opacity = '1';
+    dot.style.left = e.clientX + 'px';
+    dot.style.top  = e.clientY + 'px';
+  });
+
+  (function loop() {
+    const tx = parseFloat(dot.style.left) || 0;
+    const ty = parseFloat(dot.style.top)  || 0;
+    rx += (tx - rx) * .13;
+    ry += (ty - ry) * .13;
+    ring.style.left = rx + 'px';
+    ring.style.top  = ry + 'px';
+    requestAnimationFrame(loop);
+  })();
+
+  document.querySelectorAll('a, button, input').forEach(el => {
+    el.addEventListener('mouseenter', () => { ring.style.width = ring.style.height = '46px'; });
+    el.addEventListener('mouseleave', () => { ring.style.width = ring.style.height = '32px'; });
+  });
+
+  /* ── Particles ── */
+  const pc = document.getElementById('particles');
+  for (let i = 0; i < 14; i++) {
+    const p = document.createElement('div');
+    p.classList.add('particle');
+    const s = Math.random() * 7 + 3;
+    p.style.cssText = `width:${s}px;height:${s}px;left:${Math.random()*100}%;animation-duration:${Math.random()*12+7}s;animation-delay:${Math.random()*8}s;`;
+    pc.appendChild(p);
+  }
+
+  /* ── Password toggle ── */
+  document.getElementById('togglePass').addEventListener('click', function () {
+    const inp  = document.getElementById('passInput');
+    const icon = document.getElementById('eyeIcon');
+    if (inp.type === 'password') {
+      inp.type = 'text';
+      icon.className = 'bi bi-eye-slash';
+    } else {
+      inp.type = 'password';
+      icon.className = 'bi bi-eye';
+    }
+  });
+
+  /* ── Button ripple ── */
+  document.getElementById('btnSubmit').addEventListener('click', function (e) {
+    const r   = document.createElement('span');
+    const rect = this.getBoundingClientRect();
+    const size = Math.max(rect.width, rect.height);
+    r.classList.add('ripple');
+    r.style.cssText = `width:${size}px;height:${size}px;left:${e.clientX-rect.left-size/2}px;top:${e.clientY-rect.top-size/2}px;`;
+    this.appendChild(r);
+    setTimeout(() => r.remove(), 600);
+  });
+
+  /* ── Input float label highlight ── */
+  document.querySelectorAll('.input-wrap input').forEach(inp => {
+    inp.addEventListener('focus', () => {
+      inp.closest('.input-group-field').querySelector('label').style.color = 'var(--forest)';
+    });
+    inp.addEventListener('blur', () => {
+      inp.closest('.input-group-field').querySelector('label').style.color = '';
+    });
+  });
 </script>
+</body>
 </html>

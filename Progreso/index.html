@@ -3,64 +3,219 @@
 <head>
     <meta charset="UTF-8">
     <title>Gestión de Progreso</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="css/progreso.css">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
+    <!-- Blobs de fondo -->
+    <div class="bg-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+        <div class="blob blob-4"></div>
+    </div>
+
+    <!-- Esfera flotante TikTok -->
     <a href="https://www.tiktok.com/@yamilon227" target="_blank" class="social-sphere" title="Síguenos en TikTok">
         <i class="fa-brands fa-tiktok"></i>
     </a>
 
-    <h2><i class="fa-solid fa-chart-line"></i> Panel de Progreso</h2>
+    <!-- Header -->
+    <header class="edu-header">
+        <div class="edu-logo">📊</div>
+        <div class="edu-brand">
+            amphiQ
+            <span>Panel de Progreso</span>
+        </div>
+    </header>
 
-    <div class="navigation-area">
-        <a href="../index.html" class="btn-back">
-            <i class="fa-solid fa-arrow-left"></i> Página Principal
+    <!-- Nav pills -->
+    <nav class="nav-pills-edu">
+        <a href="../index.html" class="nav-pill np-1">
+            <i class="fa-solid fa-house"></i> Página Principal
         </a>
+        <a id="btnIniciarSesion" class="nav-pill np-1" href="../Login.html" style="visibility: hidden;">
+            <i class="fa-solid fa-right-to-bracket"></i> Iniciar Sesión
+        </a>
+        <button id="btnCerrarSesion" class="nav-pill np-2" style="visibility: hidden; border: none; cursor: pointer;">
+            <i class="fa-solid fa-right-from-bracket"></i> Cerrar Sesión
+        </button>
+    </nav>
+
+    <!-- Layout principal -->
+    <div class="main-layout">
+
+        <!-- Card formulario -->
+        <div class="edu-card">
+            <div class="card-header-edu">
+                <div class="icon-badge">📝</div>
+                <h2>Registrar Progreso</h2>
+            </div>
+            <div class="card-body-edu">
+                <p id="mensajeError" style="display:none;"></p>
+
+                <form id="progresoForm">
+                    <input type="hidden" id="id_edit" name="id_edit">
+
+                    <div class="form-group">
+                        <label class="form-label-edu" for="idU">ID Usuario</label>
+                        <input type="number" name="idUsuario" id="idU" placeholder="Ej: 1" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label-edu" for="idP">ID Pregunta</label>
+                        <input type="number" name="idPregunta" id="idP" placeholder="Ej: 5" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label-edu" for="comp">Estado</label>
+                        <div class="select-wrap">
+                            <select name="Completado" id="comp" required>
+                                <option value="1">✅ Sí, finalizado</option>
+                                <option value="0">⏳ No, en curso</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label-edu" for="int">Intentos</label>
+                        <input type="number" name="Intentos" id="int" placeholder="Ej: 3" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label-edu" for="time">Tiempo (segundos)</label>
+                        <input type="number" name="Tiempo_Segundos" id="time" placeholder="Ej: 120">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label-edu" for="fecha">Fecha</label>
+                        <input type="date" name="Fecha" id="fecha">
+                    </div>
+
+                    <button type="submit" class="btn-save" id="btnSubmit">
+                        <i class="fa-solid fa-floppy-disk"></i> Guardar Datos
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Card tabla -->
+        <div class="edu-card">
+            <div class="table-header-row">
+                <span class="table-title">Registros de Progreso</span>
+                <span class="table-count" id="contadorRegistros">0 registros</span>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Usuario</th>
+                            <th>Pregunta</th>
+                            <th>Estado</th>
+                            <th>Intentos</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tablaProgreso"></tbody>
+                </table>
+            </div>
+        </div>
+
     </div>
 
-    <div class="card">
-        <p id="mensajeError" style="color: red; font-weight: bold; display: none; margin: 10px 0;"></p>
+    <script src="js/main.js"></script>
+    <script>
+        async function cargarTabla() {
+            try {
+                const res = await fetch('api.php');
+                const datos = await res.json();
 
-        <form id="progresoForm">
-            <input type="hidden" id="id_edit" name="id_edit">
+                document.getElementById('contadorRegistros').textContent = datos.length + ' registros';
 
-            <input type="number" name="idUsuario" id="idU" placeholder="ID Usuario" required>
-            <input type="number" name="idPregunta" id="idP" placeholder="ID Pregunta" required>
+                let html = '';
+                if (datos.length === 0) {
+                    html = `<tr><td colspan="5">
+                        <div class="empty-state">
+                            <div class="es-icon">📭</div>
+                            <p>No hay registros aún</p>
+                        </div>
+                    </td></tr>`;
+                } else {
+                    datos.forEach(row => {
+                        const rowData = JSON.stringify(row).replace(/"/g, '&quot;');
+                        const usuarioDisplay = row.nombreUsuario ? row.nombreUsuario : `ID: ${row.idUsuario}`;
+                        const preguntaDisplay = row.textoPregunta ? row.textoPregunta : `ID: ${row.idPregunta}`;
+                        const estadoBadge = row.Completado == 1
+                            ? '<span class="estado-badge estado-ok">✅ Finalizado</span>'
+                            : '<span class="estado-badge estado-pending">⏳ En curso</span>';
 
-            <select name="Completado" id="comp" required>
-                <option value="1">Sí, finalizado</option>
-                <option value="0">No, en curso</option>
-            </select>
+                        html += `<tr>
+                            <td><strong>${usuarioDisplay}</strong></td>
+                            <td>${preguntaDisplay}</td>
+                            <td>${estadoBadge}</td>
+                            <td>${row.Intentos}</td>
+                            <td style="display:flex; gap:6px;">
+                                <button class="btn-edit" onclick="editar(${rowData})">
+                                    <i class="fa-solid fa-pen"></i> Editar
+                                </button>
+                                <button class="btn-del" onclick="eliminar(${row.idUsuario}, ${row.idPregunta})">
+                                    <i class="fa-solid fa-trash"></i> Borrar
+                                </button>
+                            </td>
+                        </tr>`;
+                    });
+                }
+                document.getElementById('tablaProgreso').innerHTML = html;
+            } catch (e) {
+                console.error("Error al cargar la tabla:", e);
+            }
+        }
 
-            <input type="number" name="Intentos" id="int" placeholder="Intentos" required>
-            <input type="number" name="Tiempo_Segundos" id="time" placeholder="Segundos">
-            <input type="date" name="Fecha" id="fecha">
+        document.getElementById('progresoForm').onsubmit = async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const res = await fetch('api.php', { method: 'POST', body: formData });
+            const result = await res.json();
 
-            <button type="submit" class="btn btn-save" id="btnSubmit">Guardar Datos</button>
-            <button type="button" class="btn btn-cancel" id="btnCancel" style="display: none;" onclick="cancelarEdicion()">Cancelar</button>
-        </form>
-    </div>
+            if (result.status === 'success') {
+                e.target.reset();
+                document.getElementById('id_edit').value = "";
+                document.getElementById('idU').readOnly = false;
+                document.getElementById('idP').readOnly = false;
+                document.getElementById('btnSubmit').innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Guardar Datos';
+                await cargarTabla();
+            } else {
+                const err = document.getElementById('mensajeError');
+                err.textContent = "Error: " + result.message;
+                err.style.display = 'block';
+            }
+        };
 
-    <table>
-        <thead>
-            <tr>
-                <th>Usuario</th>
-                <th>ID Pregunta</th>
-                <th>Estado</th>
-                <th>Intentos</th>
-                <th>Segundos</th>
-                <th>Fecha</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-        <tbody id="tbodyProgreso">
-            </tbody>
-    </table>
+        function editar(data) {
+            document.getElementById('id_edit').value = data.idUsuario;
+            document.getElementById('idU').value = data.idUsuario;
+            document.getElementById('idU').readOnly = true;
+            document.getElementById('idP').value = data.idPregunta;
+            document.getElementById('idP').readOnly = true;
+            document.getElementById('comp').value = data.Completado;
+            document.getElementById('int').value = data.Intentos;
+            document.getElementById('time').value = data.Tiempo_Segundos;
+            document.getElementById('fecha').value = data.Fecha;
+            document.getElementById('btnSubmit').innerHTML = '<i class="fa-solid fa-rotate"></i> Actualizar';
+        }
 
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    
-    <script src="js/main.js"></script> 
+        async function eliminar(u, p) {
+            if (confirm('¿Seguro que deseas eliminar este registro?')) {
+                await fetch(`api.php?borrar_u=${u}&borrar_p=${p}`);
+                cargarTabla();
+            }
+        }
+
+        cargarTabla();
+    </script>
 </body>
 </html>

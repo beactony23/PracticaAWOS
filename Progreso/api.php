@@ -1,18 +1,7 @@
 <?php
-// api.php
-
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
-include 'conexion.php'; 
+include 'conexion.php';
 header('Content-Type: application/json');
-
-$method = $_SERVER['REQUEST_METHOD'];
-$accion = $_GET['accion'] ?? 'listar';
-
 require_once '../firebase-php-jwt/vendor/autoload.php';
-
 
 $JWT_SECRET = "4f9c8e2b1a6d7f903c51e8a4b6f1d2c7a9e5b3c8d1f4a7e2b6c9d0f3a5e8b1c2";
 
@@ -42,90 +31,75 @@ catch (Exception $error) {
   $login   = false;
 }
 
-// ==========================================
-// ENDPOINTS DE LECTURA (GET)
-// ==========================================
-if ($method === 'GET') {
-
-    if ($accion === 'listar'  && $login) {
-        $sql = "
-            SELECT p.idUsuario, u.Nom_Usuario AS nombreUsuario, p.idPregunta, pr.Pregunta AS textoPregunta,
-                   p.Completado, p.Intentos, p.Tiempo_Segundos, p.Fecha
+// 1. OBTENER DATOS CON LOS NOMBRES REALES DE TU BD
+if ($_SERVER['REQUEST_METHOD'] === 'GET' && !isset($_GET['borrar_u'])) {
+    $sql = "SELECT 
+                p.*, 
+                u.Nom_Usuario AS nombreUsuario, 
+                pr.Pregunta AS textoPregunta 
             FROM Progreso p
-            LEFT JOIN Usuarios u ON u.idUsuario = p.idUsuario
-            LEFT JOIN Preguntas pr ON pr.idPregunta = p.idPregunta
-            ORDER BY p.Fecha DESC
-        ";
-        $stmt = $pdo->query($sql);
-        echo json_encode($stmt->fetchAll());
-        exit;
+            INNER JOIN Usuarios u ON p.idUsuario = u.idUsuario
+            INNER JOIN Preguntas pr ON p.idPregunta = pr.idPregunta";
+    
+    $res = mysqli_query($conn, $sql);
+    
+    if ($res) {
+        echo json_encode(mysqli_fetch_all($res, MYSQLI_ASSOC));
+    } else {
+        echo json_encode(["status" => "error", "message" => mysqli_error($conn)]);
     }
-
-    if ($accion === 'obtenerUno') {
-        $idU = $_GET['idUsuario'] ?? 0;
-        $idP = $_GET['idPregunta'] ?? 0;
-
-        $stmt = $pdo->prepare("SELECT * FROM Progreso WHERE idUsuario = ? AND idPregunta = ?");
-        $stmt->execute([$idU, $idP]);
-        echo json_encode($stmt->fetchAll());
-        exit;
-    }
+    exit;
 }
 
-// ==========================================
-// ENDPOINTS DE ESCRITURA (POST)
-// ==========================================
-if ($method === 'POST') {
-
-    if ($accion === 'guardar' && $login) {
-        $idU = $_POST['idUsuario'];
-        $idP = $_POST['idPregunta'];
-        $comp = $_POST['Completado'];
-        $time = $_POST['Tiempo_Segundos'] ?? 0;
-
-        try {
-            $stmt = $pdo->prepare("CALL sp_RegistrarResultado(?, ?, ?, ?)");
-            $stmt->execute([$idU, $idP, $comp, $time]);
-            echo json_encode(["status" => "correcto"]);
-        } catch (PDOException $e) {
-            echo json_encode(["status" => "error", "message" => $e->getMessage()]);
-        }
-        exit;
+// 2. ELIMINAR
+if (isset($_GET['borrar_u']) && isset($_GET['borrar_p'])) {
+    $u = intval($_GET['borrar_u']);
+    $p = intval($_GET['borrar_p']);
+    $query = "DELETE FROM Progreso WHERE idUsuario=$u AND idPregunta=$p";
+    
+    if (mysqli_query($conn, $query)) {
+        echo json_encode(["status" => "success"]);
+    } else {
+        echo json_encode(["status" => "error", "message" => mysqli_error($conn)]);
     }
-
-    if ($accion === 'modificar' && $login) {
-        $idU = $_POST['idUsuario'];
-        $idP = $_POST['idPregunta'];
-        $comp = $_POST['Completado'];
-        $intentos = $_POST['Intentos'] ?? 0;
-        $time = $_POST['Tiempo_Segundos'] ?? 0;
-        $fecha = !empty($_POST['Fecha']) ? $_POST['Fecha'] : date('Y-m-d');
-
-        try {
-            $stmt = $pdo->prepare("UPDATE Progreso SET Completado = ?, Intentos = ?, Tiempo_Segundos = ?, Fecha = ? WHERE idUsuario = ? AND idPregunta = ?");
-            $stmt->execute([$comp, $intentos, $time, $fecha, $idU, $idP]);
-            echo json_encode(["status" => "correcto"]);
-        } catch (PDOException $e) {
-            echo json_encode(["status" => "error", "message" => $e->getMessage()]);
-        }
-        exit;
-    }
-
-    if ($accion === 'eliminar' && $login) {
-
-        $idU = $_POST['idUsuario'];
-        $idP = $_POST['idPregunta'];
-
-        try {
-            $stmt = $pdo->prepare("DELETE FROM Progreso WHERE idUsuario = ? AND idPregunta = ?");
-            $stmt->execute([$idU, $idP]);
-            echo json_encode(["status" => "correcto"]);
-        } catch (PDOException $e) {
-            echo json_encode(["status" => "error", "message" => $e->getMessage()]);
-        }
-        exit;
-    }
+    exit;
 }
 
-echo json_encode(["status" => "error", "message" => "Endpoint no encontrado"]);
+// 3. GUARDAR O ACTUALIZAR
+if (isset($_POST['idUsuario'])) {
+    $idU = intval($_POST['idUsuario']);
+    $idP = intval($_POST['idPregunta']);
+    $comp = intval($_POST['Completado']);
+    $int = intval($_POST['Intentos']);
+    $time = intval($_POST['Tiempo_Segundos']);
+    $fecha = mysqli_real_escape_string($conn, $_POST['Fecha']);
+    $id_edit = $_POST['id_edit']; 
+
+    $checkUser = mysqli_query($conn, "SELECT idUsuario FROM Usuarios WHERE idUsuario = $idU");
+    $checkPreg = mysqli_query($conn, "SELECT idPregunta FROM Preguntas WHERE idPregunta = $idP");
+
+    if (mysqli_num_rows($checkUser) == 0 || mysqli_num_rows($checkPreg) == 0) {
+        echo json_encode(["status" => "error", "message" => "ese id no existe"]);
+        exit;
+    }
+
+    if ($id_edit == "") {
+        $sql = "INSERT INTO Progreso (idUsuario, idPregunta, Completado, Intentos, Tiempo_Segundos, Fecha)
+                VALUES ($idU, $idP, $comp, $int, $time, '$fecha')";
+    } else {
+        $sql = "UPDATE Progreso SET 
+                    Completado=$comp, 
+                    Intentos=$int, 
+                    Tiempo_Segundos=$time, 
+                    Fecha='$fecha' 
+                WHERE idUsuario=$idU AND idPregunta=$idP";
+    }
+
+    if(mysqli_query($conn, $sql)) {
+        echo json_encode(["status" => "success"]);
+    } else {
+        echo json_encode(["status" => "error", "message" => mysqli_error($conn)]);
+    }
+    exit;
+}
 ?>

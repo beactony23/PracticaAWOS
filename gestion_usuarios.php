@@ -1,6 +1,5 @@
 <?php
 session_start();
-error_reporting(0);
 require_once "conexion2.php";
 
 /* 🛠 PROCESAR ACCIONES DE ROL */

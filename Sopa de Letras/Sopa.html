@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sopa de Letras · AmphIQ</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+</head>
+<body>
+
+    <div class="game-wrap">
+
+        <div class="game-header">
+            <h1>Sopa de <span>Letras</span></h1>
+            <p>Encuentra todas las palabras ocultas en la cuadrícula.</p>
+        </div>
+
+        <div class="stats-bar">
+            <div class="stat-pill">
+                <div class="dot"></div>
+                Vidas: <span id="vidas-restantes">❤️ ❤️ ❤️</span>
+            </div>
+            <div class="stat-pill">
+                Encontradas: <span id="count-encontradas">0</span>
+            </div>
+        </div>
+
+        <div class="game-body">
+
+            <div class="grid-card">
+                <div id="sopa-container" class="grid-sopa"></div>
+            </div>
+
+            <div class="words-card">
+                <h3>Palabras</h3>
+                <ul id="lista-palabras"></ul>
+
+                <div class="progress-wrap">
+                    <div class="progress-label">
+                        <span>Progreso</span>
+                        <span id="progress-pct">0%</span>
+                    </div>
+                    <div class="progress-track">
+                        <div class="progress-fill" id="progress-fill"></div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        const observer = new MutationObserver(() => {
+            const total    = document.querySelectorAll('#lista-palabras li').length;
+            const found    = document.querySelectorAll('#lista-palabras li.tachado').length;
+            const pct      = total ? Math.round(found / total * 100) : 0;
+            const fill     = document.getElementById('progress-fill');
+            const pctLabel = document.getElementById('progress-pct');
+            const count    = document.getElementById('count-encontradas');
+            if (fill)     fill.style.width = pct + '%';
+            if (pctLabel) pctLabel.textContent = pct + '%';
+            if (count)    count.textContent = found;
+        });
+
+        observer.observe(document.getElementById('lista-palabras'), {
+            subtree: true, attributes: true, attributeFilter: ['class'], childList: true
+        });
+    </script>
+</body>
+</html>

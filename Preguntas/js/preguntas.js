@@ -1,4 +1,4 @@
-
+const API = "https://joy-rain-loan-civic.trycloudflare.com/4B/Api-GitHub/PracticaAWOS/"
 
 $.ajaxSetup({
     headers: {
@@ -14,10 +14,10 @@ $.get(`servicio.php?ObtenerCursos`, function (cursos) {
     });
 })
 
-$.get(`../Login.php?sesion`, function (sesion) {
+$.get(`${API}Login.php?sesion`, function (sesion) {
 
     if (sesion.length === 0) {
-            window.location.replace("Login.html");
+            window.location.replace(`${API}Login.html`);
     } else {
           return
     }
@@ -39,7 +39,7 @@ $.get(`../Login.php?sesion`, function (sesion) {
 buscarPreguntas()
 
 function buscarPreguntas() {
-    $.get(`servicio.php?Preguntas`, function (Preguntas) {
+    $.get(`${API}/Preguntas/servicio.php?Preguntas`, function (Preguntas) {
         document.getElementById("tbodyPreguntas").innerHTML = ''
 
         Preguntas.forEach(Pregunta => {
@@ -60,7 +60,7 @@ function buscarPreguntas() {
 
 $("#btnCerrarSesion").click(function (event) {
     localStorage.removeItem("jwt")
-    window.location = "../Login.html?reload"
+    window.location = `${API}Login.html?reload`
 })
 
 function mostrarToast(mensaje) {
@@ -104,7 +104,7 @@ $(document).on("click", ".btn-eliminar", function (event) {
 
     if (!confirm("Deseas eliminar esta pregunta?")) return
 
-    $.post(`servicio.php?eliminarPregunta`, { txtId: id }, function (respuesta) {
+    $.post(`${API}/Preguntas/servicio.php?eliminarPregunta`, { txtId: id }, function (respuesta) {
         if (respuesta == "correcto") {
             alert("Pregunta eliminada correctamente")
             buscarPreguntas()
@@ -118,7 +118,7 @@ $(document).on("click", ".btn-editar", function (event) {
 
     if (!confirm("Deseas editar esta pregunta?")) return
 
-    $.get("servicio.php?editarPregunta", { txtId: id }, function (respuesta) {
+    $.get(`${API}/Preguntas/servicio.php?editarPregunta`, { txtId: id }, function (respuesta) {
         const campos_respuesta = respuesta[0]
 
         $("#txtId").val(campos_respuesta["idPregunta"])
@@ -132,7 +132,7 @@ $("#frmProducto").submit(function (event) {
     event.preventDefault()
 
     if ($("#txtId").val()) {
-        $.post(`servicio.php?modificarPregunta`, $(this).serialize(), function (respuesta) {
+        $.post(`${API}/Preguntas/servicio.php?modificarPregunta`, $(this).serialize(), function (respuesta) {
             if (respuesta == "correcto") {
                 alert("Pregunta modificada correctamente")
                 $("#frmProducto").get(0).reset()
@@ -143,7 +143,7 @@ $("#frmProducto").submit(function (event) {
         return
     }
 
-    $.post(`servicio.php?insertarPregunta`, $(this).serialize(), function (respuesta) {
+    $.post(`${API}/Preguntas/servicio.php?insertarPregunta`, $(this).serialize(), function (respuesta) {
         if (respuesta != "0") {
             alert("Pregunta agregada correctamente")
             $("#frmProducto").get(0).reset()

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memory Match · AmphIQ</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+</head>
+<body>
+    <div class="game-wrap">
+        <a href="../index.html" class="back-btn">
+            <i class="bi bi-arrow-left"></i> Volver al inicio
+        </a>
+
+        <div class="game-header">
+            <h1>Memory <span>Match</span></h1>
+            <p>Une cada emoji con su palabra en inglés.</p>
+        </div>
+
+        <div class="stats-bar">
+            <div class="stat-pill"><div class="dot"></div>Vidas: <span id="vidas-restantes">❤️❤️❤️</span></div>
+            <div class="stat-pill">Parejas: <span id="count-parejas">0 / 8</span></div>
+            <div class="stat-pill">Intentos: <span id="count-intentos">0</span></div>
+        </div>
+
+        <div class="grid-card">
+            <div class="memory-grid" id="memory-grid"></div>
+        </div>
+
+        <div class="progress-wrap">
+            <div class="progress-label"><span>Progreso</span><span id="progress-pct">0%</span></div>
+            <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

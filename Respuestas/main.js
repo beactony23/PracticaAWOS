@@ -1,4 +1,4 @@
-const API = "https://thereby-children-enquiries-effect.trycloudflare.com/4B/Api-GitHub/PracticaAWOS"
+const API = "https://joy-rain-loan-civic.trycloudflare.com/4B/Api-GitHub/PracticaAWOS"
 
 $.ajaxSetup({
     headers: {
