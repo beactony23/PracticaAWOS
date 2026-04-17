@@ -355,3 +355,70 @@ body {
 
     .words-card { width: 100%; }
 }
+.translation {
+    font-size: 0.85em;
+    color: var(--sage-deep);
+    font-weight: 400;
+    margin-left: 8px;
+    font-style: italic;
+}
+
+.boton-siguiente {
+    background: var(--forest);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 4px 15px rgba(45, 92, 52, 0.2);
+}
+
+.boton-siguiente:hover {
+    background: var(--charcoal);
+    transform: translateY(-2px);
+}
+
+.victoria-card .d-flex {
+    display: flex;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+/* Traducción al lado de la palabra tachada */
+.translation {
+    font-size: 0.85em;
+    color: var(--sage-deep);
+    font-weight: 400;
+    margin-left: 8px;
+    font-style: italic;
+    opacity: 0.9;
+}
+
+/* Botón de Siguiente Nivel */
+.boton-siguiente {
+    background: var(--forest);
+    color: var(--white);
+    border: none;
+    padding: 12px 24px;
+    border-radius: 12px;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 4px 15px rgba(45, 92, 52, 0.2);
+}
+
+.boton-siguiente:hover {
+    background: var(--charcoal);
+    transform: translateY(-2px);
+}
+
+/* Ajuste para los botones en la tarjeta de victoria */
+.victoria-card .d-flex {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 20px;
+}

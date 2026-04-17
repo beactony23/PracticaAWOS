@@ -1,4 +1,4 @@
-const API = "https://joy-rain-loan-civic.trycloudflare.com/4B/Api-GitHub/PracticaAWOS/"
+const API = "https://brakes-invoice-magazine-cube.trycloudflare.com/4B/Api-GitHub/PracticaAWOS/"
 os
 
 function buscarProductos() {

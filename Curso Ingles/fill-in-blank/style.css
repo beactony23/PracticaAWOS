@@ -203,3 +203,43 @@ body {
     .question-card { padding: 1.4rem 1.2rem; }
     .q-oracion { font-size: 1rem; }
 }
+.feedback {
+    display: none; /* Oculto por defecto */
+    margin-top: 1.2rem;
+    padding: 1rem;
+    border-radius: 12px;
+    height: auto !important; /* Permite que el cuadro crezca con el texto */
+    min-height: 60px;
+    animation: popIn 0.3s ease-out;
+}
+
+.feedback.ok {
+    display: block;
+    background: #eef7ee;
+    border: 1px solid var(--sage);
+    color: var(--forest);
+}
+
+.feedback.no {
+    display: block;
+    background: #fdf2f2;
+    border: 1px solid #fababa;
+    color: #c0392b;
+}
+
+.feedback-content {
+    text-align: left;
+}
+
+.status-text {
+    font-weight: 700;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.explanation-text {
+    font-size: 0.9rem;
+    line-height: 1.4;
+    margin: 0;
+    opacity: 0.85;
+}

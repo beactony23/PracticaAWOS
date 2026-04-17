@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Conecta: Inglés ↔ Español — AmphIQ</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Partículas de fondo -->
+    <div id="particles"></div>
+
+    <!-- Navbar AmphIQ -->
+    <nav class="amphiq-nav">
+        <div class="nav-inner">
+            <a class="nav-brand" href="../../dashboard/Cursos.php">
+                <span>AmphIQ</span>
+            </a>
+            <a href="../../dashboard/Cursos.php" class="btn-back">
+                <i class="bi bi-arrow-left"></i> Volver a Cursos
+            </a>
+        </div>
+    </nav>
+
+    <main>
+        <div class="game-container">
+
+            <!-- Header del juego -->
+            <header class="game-header reveal">
+                <div class="game-icon"><i class="bi bi-link-45deg"></i></div>
+                <div>
+                    <h1>Conecta: Inglés <span class="arrow">↔</span> Español</h1>
+                    <p class="subtitle">Haz clic en una palabra en inglés y luego en su significado en español</p>
+                </div>
+            </header>
+
+            <!-- Botones de nivel -->
+            <div class="level-buttons reveal">
+                <button class="level-btn active" data-level="1">
+                    <i class="bi bi-seedling"></i> Nivel 1 — Básico
+                </button>
+                <button class="level-btn" data-level="2">
+                    <i class="bi bi-database"></i> Nivel 2 — SQL
+                </button>
+                <button class="level-btn" data-level="3">
+                    <i class="bi bi-trophy"></i> Nivel 3 — Avanzado
+                </button>
+            </div>
+
+            <!-- Tablero -->
+            <div class="board" id="board"></div>
+
+            <!-- Stats -->
+            <div class="stats-bar reveal">
+                <div class="stats-text">
+                    <i class="bi bi-check2-circle"></i>
+                    Conexiones: <strong><span id="connected">0</span> / <span id="total">0</span></strong>
+                </div>
+                <div class="progress-track">
+                    <div class="progress-fill" id="progressBar"></div>
+                </div>
+            </div>
+
+            <!-- Acciones -->
+            <div class="actions reveal">
+                <button id="resetBtn" class="btn-reset">
+                    <i class="bi bi-arrow-clockwise"></i> Reiniciar nivel
+                </button>
+            </div>
+
+            <!-- Mensaje -->
+            <div id="message" class="message-box"></div>
+
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+    <script>
+        // Partículas flotantes
+        const container = document.getElementById('particles');
+        for (let i = 0; i < 18; i++) {
+            const p = document.createElement('div');
+            p.classList.add('particle');
+            const size = Math.random() * 8 + 3;
+            p.style.cssText = `
+                width:${size}px; height:${size}px;
+                background:#8aab8e;
+                left:${Math.random()*100}%;
+                top:${Math.random()*100}%;
+                position:absolute;
+                border-radius:50%;
+                opacity:0.35;
+                animation:float ${Math.random()*14+8}s infinite linear;
+            `;
+            container.appendChild(p);
+        }
+
+        // Reveal on scroll
+        const revealEls = document.querySelectorAll('.reveal');
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+        }, { threshold: .1 });
+        revealEls.forEach(el => observer.observe(el));
+    </script>
+</body>
+</html>

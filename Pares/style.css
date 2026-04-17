@@ -1,0 +1,105 @@
+:root {
+    --bg-dark: #0f172a;
+    --glass-bg: rgba(255, 255, 255, 0.05);
+    --neon-blue: #38bdf8;
+    --neon-purple: #a855f7;
+    --text-main: #f1f5f9;
+}
+
+body {
+    background: radial-gradient(circle at top right, #1e293b, var(--bg-dark));
+    color: var(--text-main);
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.glass-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 24px;
+    padding: 40px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    text-align: center;
+}
+
+h1 { margin: 0; font-size: 2rem; font-weight: 800; }
+.neon-text { color: var(--neon-blue); text-shadow: 0 0 10px var(--neon-blue); }
+p { opacity: 0.6; margin-bottom: 30px; }
+
+.stats {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 25px;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Cuadrícula */
+.grid-layout {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+}
+
+.tile {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 25px 10px;
+    border-radius: 16px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.tile:hover {
+    background: rgba(255, 255, 255, 0.08);
+    transform: translateY(-3px);
+    border-color: var(--neon-blue);
+}
+
+/* Estados */
+.active-tile {
+    background: linear-gradient(45deg, var(--neon-blue), var(--neon-purple));
+    border-color: transparent;
+    box-shadow: 0 0 15px rgba(56, 189, 248, 0.4);
+}
+
+.matched-tile {
+    opacity: 0;
+    pointer-events: none;
+    transform: scale(0.8);
+}
+
+.wrong-tile {
+    border-color: #ef4444;
+    background: rgba(239, 68, 68, 0.1);
+}
+
+/* Botón */
+.glow-button {
+    margin-top: 30px;
+    width: 100%;
+    padding: 15px;
+    background: transparent;
+    border: 1px solid var(--neon-blue);
+    color: var(--neon-blue);
+    border-radius: 12px;
+    font-weight: bold;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.glow-button:hover {
+    background: var(--neon-blue);
+    color: var(--bg-dark);
+    box-shadow: 0 0 20px var(--neon-blue);
+}

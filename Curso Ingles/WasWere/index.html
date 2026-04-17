@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Was or Were? — English Puzzle Game</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Sora:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Decorative background bubbles -->
+  <div class="bg-bubbles" aria-hidden="true">
+    <span></span><span></span><span></span><span></span><span></span>
+  </div>
+
+  <main class="game-wrapper">
+
+    <!-- Header -->
+    <header class="game-header">
+      <div class="game-logo">
+        <span class="logo-puzzle">🧩</span>
+        <span class="logo-title">EnglishBlocks</span>
+      </div>
+      <h1 class="game-title">Was <span class="title-or">or</span> Were?</h1>
+      <p class="game-subtitle">Drag the correct piece to complete each sentence</p>
+    </header>
+
+    <!-- Rule cards -->
+    <section class="rule-section" aria-label="Grammar rule">
+      <div class="rule-card rule-was">
+        <div class="rule-word">WAS</div>
+        <div class="rule-pronouns">
+          <span class="pronoun-pill">I</span>
+          <span class="pronoun-pill">He</span>
+          <span class="pronoun-pill">She</span>
+          <span class="pronoun-pill">It</span>
+        </div>
+      </div>
+      <div class="rule-divider">VS</div>
+      <div class="rule-card rule-were">
+        <div class="rule-word">WERE</div>
+        <div class="rule-pronouns">
+          <span class="pronoun-pill">You</span>
+          <span class="pronoun-pill">We</span>
+          <span class="pronoun-pill">They</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Scoreboard -->
+    <section class="scoreboard" aria-label="Score">
+      <div class="score-item">
+        <div class="score-num" id="sc-correct">0</div>
+        <div class="score-label">Correct</div>
+      </div>
+      <div class="score-item">
+        <div class="score-num" id="sc-total">0</div>
+        <div class="score-label">Answered</div>
+      </div>
+      <div class="score-item">
+        <div class="score-num" id="sc-streak">0</div>
+        <div class="score-label">🔥 Streak</div>
+      </div>
+    </section>
+
+    <!-- Progress bar -->
+    <div class="progress-wrap" aria-label="Progress">
+      <div class="progress-bar">
+        <div class="progress-fill" id="prog-fill"></div>
+      </div>
+      <div class="progress-label" id="prog-label">0 / 10</div>
+    </div>
+
+    <!-- Sentence display -->
+    <section class="sentence-section" id="sentence-section" aria-live="polite">
+      <div class="sentence-display" id="sentence-display"></div>
+      <div class="feedback-msg" id="feedback" role="alert"></div>
+    </section>
+
+    <!-- Puzzle pieces -->
+    <div class="pieces-area" id="pieces-area" aria-label="Puzzle pieces"></div>
+
+    <!-- Touch hint (mobile) -->
+    <p class="touch-hint" id="touch-hint">Tap a piece to place it · Drag on desktop</p>
+
+  </main>
+
+  <!-- Win screen (hidden by default) -->
+  <div class="win-overlay" id="win-overlay" aria-modal="true" role="dialog" aria-label="You win!" hidden>
+    <div class="win-card">
+      <div class="win-trophy">🏆</div>
+      <h2 class="win-title">Well done!</h2>
+      <p class="win-sub">You completed all 10 sentences.</p>
+      <div class="win-score-box">
+        <span id="win-correct">0</span>
+        <span class="win-score-sep">/</span>
+        <span>10</span>
+        <span class="win-score-label">correct</span>
+      </div>
+      <div class="win-rule-recap">
+        <div class="rule-card rule-was small">
+          <div class="rule-word">WAS</div>
+          <div class="rule-pronouns">
+            <span class="pronoun-pill">I</span>
+            <span class="pronoun-pill">He</span>
+            <span class="pronoun-pill">She</span>
+            <span class="pronoun-pill">It</span>
+          </div>
+        </div>
+        <div class="rule-card rule-were small">
+          <div class="rule-word">WERE</div>
+          <div class="rule-pronouns">
+            <span class="pronoun-pill">You</span>
+            <span class="pronoun-pill">We</span>
+            <span class="pronoun-pill">They</span>
+          </div>
+        </div>
+      </div>
+      <button class="btn-play-again" id="btn-play-again">Play Again</button>
+      <button class="btn-play-again" onclick="window.location.href='../../dashboard/Cursos.php'">← Volver a Cursos</button>
+    </div>
+  </div>
+
+  <script src="game.js"></script>
+</body>
+</html>

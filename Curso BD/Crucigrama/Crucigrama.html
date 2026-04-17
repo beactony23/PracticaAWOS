@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AmphIQ — Crucigrama de Base de Datos</title>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="glass-container">
+
+        <header>
+            <h1>🧩 Crucigrama de Base de Datos</h1>
+            <div class="stats-bar">
+                <div class="stat-item">
+                    ✅ <strong><span id="completadas">0</span> / 7</strong> palabras<br>
+                    <span style="font-size:0.76rem;color:var(--text-faint)">Todas las respuestas están en inglés &nbsp;·&nbsp; 💡 revela la palabra si la necesitas</span>
+                </div>
+                <div class="progress-container">
+                    <div class="progress-fill" id="progressBar"></div>
+                </div>
+            </div>
+        </header>
+
+        <main class="game-layout">
+
+            <!-- Tablero -->
+            <section class="board-section">
+                <div id="crossword-wrapper"></div>
+                <div class="controls">
+                    <button id="verificarBtn" class="btn-primary">✓ Verificar Todo</button>
+                    <button id="reiniciarBtn" class="btn-secondary">↺ Reiniciar</button>
+                    <button
+                        id="nextGameBtn"
+                        class="btn-success"
+                        style="display:none;"
+                        onclick="window.location.href='../Memoria/memoria.html'">
+                        Siguiente Minijuego ➔
+                    </button>
+                </div>
+            </section>
+
+            <!-- Pistas -->
+            <section class="clues-section">
+                <div class="clue-group">
+                    <h3>➡️ &nbsp;Horizontales</h3>
+                    <div id="horizontales-list"></div>
+                </div>
+                <div class="clue-group">
+                    <h3>⬇️ &nbsp;Verticales</h3>
+                    <div id="verticales-list"></div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

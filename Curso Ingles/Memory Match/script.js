@@ -1,3 +1,15 @@
+function guardarProgresoMemory() {
+    const progreso = {
+        jugado: true,
+        completado: parejasEncontradas === total,
+        sinVidas: vidas <= 0,
+        avance: parejasEncontradas,
+        vidasPerdidas: 8 - vidas,
+        vidasRestantes: vidas
+    };
+    localStorage.setItem('amphiq_memory', JSON.stringify(progreso));
+}
+
 const PARES = [
     { emoji: '🍎', palabra: 'APPLE'  },
     { emoji: '🏠', palabra: 'HOUSE'  },
@@ -9,7 +21,7 @@ const PARES = [
     { emoji: '😊', palabra: 'SMILE'  }
 ];
 
-let vidas = 3;
+let vidas = 8;
 let parejasEncontradas = 0;
 let intentos = 0;
 let cartasVolteadas = [];
@@ -81,6 +93,7 @@ function verificar() {
         if (parejasEncontradas === total) setTimeout(victoria, 500);
     } else {
         vidas--;
+        guardarProgresoMemory();
         document.getElementById('vidas-restantes').textContent =
             '❤️'.repeat(Math.max(0, vidas)) || '💔';
         a.classList.add('wrong');
@@ -115,12 +128,24 @@ function finalizarJuego(ganaste) {
             <p>${ganaste
                 ? `Encontraste todas las parejas en <strong>${intentos}</strong> intentos. ¡Excelente memoria!`
                 : 'Te quedaste sin vidas. ¡Inténtalo de nuevo!'}</p>
-            <div class="overlay-btns">
-                <button class="boton-reiniciar" onclick="location.reload()">¿Otra vez?</button>
-                <a class="boton-inicio" href="../index.html">← Volver al inicio</a>
+            <div class="overlay-btns" style="display: flex; flex-direction: column; gap: 10px; align-items: center;">
+                
+                ${ganaste ? `
+                    <button class="boton-siguiente" onclick="window.location.href='../fill-in-blank/fill-in-blank.html'" 
+                        style="background: var(--forest); color: white; border: none; padding: 12px 24px; border-radius: 12px; font-weight: 600; cursor: pointer; width: 100%;">
+                        Siguiente Minijuego
+                    </button>
+                ` : ''}
+
+                <button class="boton-reiniciar" onclick="location.reload()" style="width: 100%;">¿Otra vez?</button>
+                
+                <a class="boton-inicio" href="../../index.html" style="text-decoration: none; color: var(--muted); font-size: 0.9em; margin-top: 5px;">
+                    ← Volver al inicio
+                </a>
             </div>
         </div>`;
     document.body.appendChild(overlay);
 }
 
 construirTablero();
+guardarProgresoMemory();
