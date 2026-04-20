@@ -16,15 +16,15 @@ const VIDAS_INICIALES = 3; // Te sugiero subir a 3 para que no sea tan castigado
 // Diccionario Inglés - Español
 const diccionario = {
     "APPLE": "Manzana",
-    "HOUSE": "Casa",
-    "WATER": "Agua",
-    "BREAD": "Pan",
-    "SMILE": "Sonrisa",
-    "GREEN": "Verde",
-    "MUSIC": "Música",
-    "NIGHT": "Noche",
-    "BOOKS": "Libros",
-    "HAPPY": "Feliz",
+    //"HOUSE": "Casa",
+    //"WATER": "Agua",
+    //"BREAD": "Pan",
+    //"SMILE": "Sonrisa",
+    //"GREEN": "Verde",
+    //"MUSIC": "Música",
+    //"NIGHT": "Noche",
+    //"BOOKS": "Libros",
+    //"HAPPY": "Feliz",
 };
 
 const palabras = Object.keys(diccionario);

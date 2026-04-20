@@ -170,7 +170,7 @@
 // Lógica para leer el LocalStorage y armar la ventana
 function abrirModalProgreso() {
     const juegos = [
-        { nombre: 'Sopa de Letras', meta: 12, data: JSON.parse(localStorage.getItem('amphiq_sopa')) },
+        { nombre: 'Sopa de Letras', meta: 10, data: JSON.parse(localStorage.getItem('amphiq_sopa')) },
         { nombre: 'Memory Match', meta: 8, data: JSON.parse(localStorage.getItem('amphiq_memory')) },
         { nombre: 'Fill in the Blank', meta: 10, data: JSON.parse(localStorage.getItem('amphiq_fill')) }
     ];
